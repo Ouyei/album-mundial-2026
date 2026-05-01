@@ -6,185 +6,62 @@
     <title>Álbum de Dante - D.S.C. Edition</title>
     <style>
         :root {
-            /* Colores de Defensor Sporting */
-            --dsc-violeta: #52217D; /* El violeta característico */
+            --dsc-violeta: #52217D;
             --dsc-blanco: #ffffff;
             --dsc-violeta-claro: #7b4ba3;
-            --dsc-accent: #f59e0b; /* Dorado de los aros */
-            
-            /* Variables de la App */
+            --dsc-accent: #f59e0b; 
             --primary: var(--dsc-violeta);
-            --accent: var(--dsc-accent); /* Dorado para repetidas y badge */
+            --accent: var(--dsc-accent);
             --bg: #f3f4f6;
             --card-bg: #ffffff;
             --text: #1f2937;
             --border: #d1d5db;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        /* Header con estilo Defensor y Logo */
-        .header-section {
-            background-color: var(--dsc-violeta);
-            color: white;
-            padding: 25px 20px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px; /* Espacio entre logo y texto */
-        }
-
-        .dsc-logo {
-            height: 70px; /* Tamaño del escudo */
-            width: auto;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); /* Sombra suave */
-        }
-
-        .header-text-area {
-            text-align: left;
-        }
-
-        h1 { 
-            font-size: 26px; 
-            margin: 0; 
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 800;
-        }
-
-        .header-section p { 
-            color: #e9d5ff; 
-            margin: 5px 0 0 0; 
-            font-size: 15px; 
-            opacity: 0.9;
-            font-style: italic;
-        }
+        /* Header */
+        .header-section { background-color: var(--dsc-violeta); color: white; padding: 25px 20px; border-radius: 15px; margin-bottom: 25px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: flex; align-items: center; justify-content: center; gap: 20px; }
+        .dsc-logo { height: 70px; width: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+        .header-text-area { text-align: left; }
+        h1 { font-size: 26px; margin: 0; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; }
+        .header-section p { color: #e9d5ff; margin: 5px 0 0 0; font-size: 15px; opacity: 0.9; font-style: italic; }
         
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            padding: 15px 5px;
-            border-radius: 12px;
-            text-align: center;
-            border: 2px solid var(--border);
-            transition: transform 0.2s;
-        }
-
-        .stat-card:hover { transform: translateY(-2px); }
-
+        /* Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 25px; }
+        .stat-card { background: var(--card-bg); padding: 15px 5px; border-radius: 12px; text-align: center; border: 2px solid var(--border); transition: transform 0.2s; }
         .stat-value { font-size: 22px; font-weight: bold; margin-bottom: 3px; }
         .stat-label { font-size: 11px; color: #6b7280; text-transform: uppercase; font-weight: 600; }
-        
         .c-tenes { color: var(--dsc-violeta); }
         .c-faltan { color: #ef4444; }
         .c-rep { color: var(--accent); }
         
         /* Tabs */
-        .tabs { display: flex; gap: 5px; margin-bottom: 20px; background: #e5e7eb; padding: 5px; border-radius: 10px; }
-        .tab { 
-            flex: 1; padding: 12px; cursor: pointer; border: none; background: none; 
-            font-size: 14px; font-weight: bold; color: #4b5563; border-radius: 8px;
-            transition: all 0.3s;
-        }
+        .tabs { display: flex; gap: 5px; margin-bottom: 20px; background: #e5e7eb; padding: 5px; border-radius: 10px; overflow-x: auto; }
+        .tab { flex: 1; padding: 12px; cursor: pointer; border: none; background: none; font-size: 13px; font-weight: bold; color: #4b5563; border-radius: 8px; white-space: nowrap; }
         .tab.active { background: var(--dsc-violeta); color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        /* Grid de figuritas */
-        .stickers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .sticker {
-            aspect-ratio: 1;
-            background: var(--card-bg);
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.15s ease;
-            user-select: none;
-        }
-
-        /* Figurita que ya tiene (Violeta DSC) */
-        .sticker.tengo { 
-            background-color: var(--dsc-violeta); 
-            color: white; 
-            border-color: var(--dsc-violeta); 
-        }
-
-        /* Figurita repetida (Violeta más claro con borde Dorado DSC) */
-        .sticker.repetida { 
-            background-color: var(--dsc-violeta-claro); 
-            color: white; 
-            border-color: var(--accent);
-            border-width: 3px;
-        }
-
-        .badge {
-            position: absolute;
-            top: -6px; right: -6px;
-            background: var(--accent); color: var(--dsc-violeta);
-            font-size: 11px; font-weight: 800;
-            width: 22px; height: 22px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            border: 2px solid white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
+        /* Grid */
+        .stickers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); gap: 10px; margin-top: 20px; }
+        .sticker { aspect-ratio: 1; background: var(--card-bg); border: 2px solid var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; position: relative; transition: all 0.15s ease; user-select: none; }
+        .sticker.tengo { background-color: var(--dsc-violeta); color: white; border-color: var(--dsc-violeta); }
+        .sticker.repetida { background-color: var(--dsc-violeta-claro); color: white; border-color: var(--accent); border-width: 3px; }
+        .badge { position: absolute; top: -6px; right: -6px; background: var(--accent); color: var(--dsc-violeta); font-size: 11px; font-weight: 800; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         
-        /* Botones y Form */
-        textarea { width: 100%; height: 120px; padding: 12px; border: 2px solid var(--border); border-radius: 10px; font-size: 16px; margin-bottom: 15px; box-sizing: border-box;}
-        
-        .btn {
-            background: var(--dsc-violeta); color: white; border: none; padding: 14px 20px; border-radius: 10px;
-            cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; margin-bottom: 10px; box-sizing: border-box;
-            transition: background 0.2s;
-        }
-        .btn:hover { background: var(--dsc-violeta-claro); }
-
-        .btn-outline {
-            background: white; color: var(--dsc-violeta); border: 2px solid var(--dsc-violeta); margin-bottom: 0;
-        }
-        .btn-outline:hover { background: #f3f4f6; }
-
+        /* Forms & Buttons */
+        textarea { width: 100%; height: 100px; padding: 12px; border: 2px solid var(--border); border-radius: 10px; font-size: 16px; margin-bottom: 15px; box-sizing: border-box; font-family: sans-serif;}
+        .btn { background: var(--dsc-violeta); color: white; border: none; padding: 14px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; margin-bottom: 10px; box-sizing: border-box; }
+        .btn-danger { background: #ef4444; }
+        .btn-outline { background: white; color: var(--dsc-violeta); border: 2px solid var(--dsc-violeta); }
         .share-box { background: white; padding: 15px; border-radius: 10px; border: 2px dashed var(--dsc-violeta); margin-bottom: 15px; }
 
         @media (max-width: 600px) {
-            .header-section { flex-direction: column; text-align: center; gap: 10px; padding: 20px; }
-            .header-text-area { text-align: center; }
+            .header-section { flex-direction: column; text-align: center; gap: 10px; }
             .dsc-logo { height: 60px; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .sticker { min-width: 55px; font-size: 14px; }
         }
     </style>
 </head>
@@ -192,7 +69,7 @@
 
 <div class="container">
     <div class="header-section">
-        <img src="dsc-logo.png" alt="D.S.C. Logo" class="dsc-logo">
+        <img src="dsc-escudo.png" alt="D.S.C. Logo" class="dsc-logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/a/a1/Defensor_Sporting.svg'">
         <div class="header-text-area">
             <h1>Álbum de Dante</h1>
             <p>Mundial 2026 • ¡Vamos la Viola!</p>
@@ -220,8 +97,9 @@
 
     <div class="tabs">
         <button class="tab active" onclick="switchTab('album')">Álbum</button>
-        <button class="tab" onclick="switchTab('ingresar')">Carga Rápida</button>
+        <button class="tab" onclick="switchTab('ingresar')">Cargar</button>
         <button class="tab" onclick="switchTab('compartir')">Compartir</button>
+        <button class="tab" onclick="switchTab('admin')" style="color: #ef4444;">Admin ⚙️</button>
     </div>
 
     <div id="tab-album" class="tab-content active">
@@ -235,28 +113,40 @@
 
     <div id="tab-ingresar" class="tab-content">
         <div class="stat-card" style="padding: 20px; text-align: left;">
-            <h3 style="margin-top:0; color: var(--dsc-violeta)">Ingresar Números</h3>
-            <p style="font-size: 14px;">Escribí los números que conseguiste (separados por coma o espacios).</p>
+            <h3 style="margin-top:0; color: var(--dsc-violeta)">Sumar Figuritas</h3>
             <textarea id="bulk-input" placeholder="Ej: 5, 12, 103, 200-210"></textarea>
-            <button class="btn" onclick="bulkAdd()">Cargar al Álbum</button>
+            <button class="btn" onclick="processBulk(true)">Agregar al Álbum</button>
         </div>
     </div>
 
     <div id="tab-compartir" class="tab-content">
         <div class="stat-card" style="padding: 20px; text-align: left;">
-            <h3 style="margin-top:0; color: var(--dsc-violeta)">Lista de Intercambio</h3>
-            <p style="font-size: 14px;">Copiá este texto para mandar por WhatsApp:</p>
+            <h3 style="margin-top:0; color: var(--dsc-violeta)">Lista para WhatsApp</h3>
             <div class="share-box">
-                <textarea id="share-text" style="height: 150px; font-family: monospace; border:none; background:transparent;" readonly></textarea>
+                <textarea id="share-text" style="height: 150px; border:none; background:transparent;" readonly></textarea>
             </div>
             <button class="btn" onclick="copyShareText()">Copiar Texto</button>
+        </div>
+    </div>
+
+    <div id="tab-admin" class="tab-content">
+        <div class="stat-card" style="padding: 20px; text-align: left; border-color: #ef4444;">
+            <h3 style="margin-top:0; color: #ef4444">Panel de Control</h3>
+            
+            <label style="font-weight: bold; font-size: 14px;">Quitar figuritas específicas:</label>
+            <p style="font-size: 12px; color: #666;">Los números que pongas acá volverán a estar "Faltantes".</p>
+            <textarea id="admin-delete-input" placeholder="Ej: 10, 22, 45-50" style="border-color: #ef4444; height: 60px;"></textarea>
+            <button class="btn btn-danger" onclick="processBulk(false)">Corregir / Eliminar</button>
+            
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+            
+            <button class="btn btn-danger" onclick="resetEverything()" style="background: #000;">⚠️ RESETEAR TODO EL ÁLBUM</button>
         </div>
     </div>
 </div>
 
 <script>
     const TOTAL_STICKERS = 640;
-    // Base de datos local específica para Dante
     let albumData = JSON.parse(localStorage.getItem('albumDataDanteDSC')) || {};
 
     function init() {
@@ -266,11 +156,9 @@
 
     function toggleSticker(num) {
         let count = albumData[num] || 0;
-        // Ciclo: Falta (0) -> Tengo (1) -> Repetida (2+) -> Falta (0)
         if (count === 0) albumData[num] = 1; 
-        else if (count >= 1 && count < 5) albumData[num] = count + 1; // Hasta 4 repes
+        else if (count >= 1 && count < 5) albumData[num] = count + 1; 
         else albumData[num] = 0; 
-        
         saveData();
         updateStats();
         renderGrid(window.currentFilter || 'todas');
@@ -280,27 +168,21 @@
         window.currentFilter = filter;
         const grid = document.getElementById('grid');
         grid.innerHTML = '';
-        
         for (let i = 1; i <= TOTAL_STICKERS; i++) {
             const count = albumData[i] || 0;
-            
-            // Lógica de filtrado
             if (filter === 'faltan' && count > 0) continue;
             if (filter === 'repetidas' && count < 2) continue;
-
             const div = document.createElement('div');
             div.className = 'sticker';
             div.innerText = i;
-            
             if (count > 0) div.classList.add('tengo');
             if (count > 1) {
                 div.classList.replace('tengo', 'repetida');
                 const badge = document.createElement('div');
                 badge.className = 'badge';
-                badge.innerText = `x${count}`; // Muestra x2, x3, etc.
+                badge.innerText = `x${count}`;
                 div.appendChild(badge);
             }
-            
             div.onclick = () => toggleSticker(i);
             grid.appendChild(div);
         }
@@ -311,63 +193,62 @@
         for (let i = 1; i <= TOTAL_STICKERS; i++) {
             const count = albumData[i] || 0;
             if (count > 0) tenes++;
-            if (count > 1) repetidas += (count - 1); // Total de repes extras
+            if (count > 1) repetidas += (count - 1);
         }
-        
         document.getElementById('stat-tenes').innerText = tenes;
         document.getElementById('stat-faltan').innerText = TOTAL_STICKERS - tenes;
         document.getElementById('stat-repetidas').innerText = repetidas;
         document.getElementById('stat-progreso').innerText = Math.round((tenes / TOTAL_STICKERS) * 100) + '%';
-        
         generateShareText();
     }
 
-    function saveData() {
-        // Clave única para guardar los datos de Dante
-        localStorage.setItem('albumDataDanteDSC', JSON.stringify(albumData));
-    }
+    function saveData() { localStorage.setItem('albumDataDanteDSC', JSON.stringify(albumData)); }
 
     function switchTab(tabId) {
-        // Ocultar todo
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
-        
-        // Mostrar la seleccionada
         document.getElementById('tab-' + tabId).classList.add('active');
-        
-        // Activar el botón correcto (manejo de nombres diferentes)
-        let tabNameMap = {'album': 'Álbum', 'ingresar': 'Carga Rápida', 'compartir': 'Compartir'};
-        const activeTabBtn = Array.from(document.querySelectorAll('.tab')).find(t => t.innerText === tabNameMap[tabId]);
-        if(activeTabBtn) activeTabBtn.classList.add('active');
+        const activeBtn = Array.from(document.querySelectorAll('.tab')).find(t => t.getAttribute('onclick').includes(tabId));
+        if(activeBtn) activeBtn.classList.add('active');
     }
 
-    function bulkAdd() {
-        const input = document.getElementById('bulk-input').value;
+    // Procesa carga (isAdd=true) o borrado (isAdd=false)
+    function processBulk(isAdd) {
+        const inputId = isAdd ? 'bulk-input' : 'admin-delete-input';
+        const input = document.getElementById(inputId).value;
         const regex = /(\d+)(?:\s*-\s*(\d+))?/g;
         let match;
-        let added = 0;
+        let count = 0;
         
         while ((match = regex.exec(input)) !== null) {
             let start = parseInt(match[1]);
             let end = match[2] ? parseInt(match[2]) : start;
-            
             for (let i = start; i <= end; i++) {
                 if (i >= 1 && i <= TOTAL_STICKERS) {
-                    albumData[i] = (albumData[i] || 0) + 1;
-                    added++;
+                    if (isAdd) albumData[i] = (albumData[i] || 0) + 1;
+                    else albumData[i] = 0;
+                    count++;
                 }
             }
         }
-        
-        if (added > 0) {
+        if (count > 0) {
             saveData();
             updateStats();
-            renderGrid(window.currentFilter || 'todas');
-            document.getElementById('bulk-input').value = '';
-            alert('¡Figuritas cargadas al álbum!');
-            switchTab('album'); // Volver a la vista del álbum
-        } else if (input.trim() !== "") {
-            alert('No se reconocieron números válidos. Usá el formato: 1, 5, 10-15');
+            renderGrid('todas');
+            document.getElementById(inputId).value = '';
+            alert(isAdd ? '¡Figuritas sumadas!' : '¡Figuritas corregidas!');
+            switchTab('album');
+        }
+    }
+
+    function resetEverything() {
+        if (confirm('¿Estás SEGURO de que querés borrar TODO el álbum? Esta acción no se puede deshacer.')) {
+            albumData = {};
+            saveData();
+            updateStats();
+            renderGrid('todas');
+            alert('Álbum reseteado.');
+            switchTab('album');
         }
     }
 
@@ -378,7 +259,6 @@
             if (count === 0) faltan.push(i);
             if (count > 1) repetidas.push(`${i}(x${count-1})`);
         }
-        
         const text = `⚽ ÁLBUM DE DANTE (Mundial 2026)\n\n💜 REPETIDAS DSC:\n${repetidas.length > 0 ? repetidas.join(', ') : 'No tengo repetidas aún.'}\n\n❌ ME FALTAN:\n${faltan.join(', ')}\n\n¿Cambiamos? 🟢🟣⚪`;
         document.getElementById('share-text').value = text;
     }
@@ -386,12 +266,10 @@
     function copyShareText() {
         const textArea = document.getElementById('share-text');
         textArea.select();
-        textArea.setSelectionRange(0, 99999); // Para móviles
         document.execCommand('copy');
-        alert('¡Texto copiado! Ya podés pegarlo en WhatsApp.');
+        alert('¡Copiado para WhatsApp!');
     }
 
-    // Inicializar app
     init();
 </script>
 </body>
