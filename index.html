@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Álbum Mundial 2026</title>
+    <style>
+        :root {
+            --primary: #10b981; /* Verde */
+            --warning: #f59e0b; /* Naranja */
+            --bg: #f9fafb;
+            --card-bg: #ffffff;
+            --text: #1f2937;
+            --border: #e5e7eb;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 { font-size: 24px; margin-bottom: 5px; }
+        p { color: #6b7280; margin-top: 0; font-size: 14px; margin-bottom: 20px; }
+        
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            padding: 15px 10px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .stat-value { font-size: 20px; font-weight: bold; margin-bottom: 5px; }
+        .stat-label { font-size: 12px; color: #6b7280; }
+        .c-tenes { color: var(--primary); }
+        .c-faltan { color: #ef4444; }
+        .c-rep { color: var(--warning); }
+        
+        /* Tabs */
+        .tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+        .tab { 
+            padding: 10px 20px; cursor: pointer; border: none; background: none; 
+            font-size: 14px; font-weight: 500; color: #6b7280;
+        }
+        .tab.active { color: var(--text); border-bottom: 2px solid var(--text); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Grid de figuritas */
+        .stickers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 8px;
+            margin-top: 20px;
+        }
+        .sticker {
+            aspect-ratio: 1;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+            transition: all 0.2s;
+        }
+        .sticker.tengo { background-color: var(--primary); color: white; border-color: var(--primary); }
+        .sticker.repetida { background-color: var(--warning); color: white; border-color: var(--warning); }
+        .badge {
+            position: absolute;
+            top: -5px; right: -5px;
+            background: #ef4444; color: white;
+            font-size: 10px; font-weight: bold;
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        
+        /* Formularios */
+        textarea { width: 100%; height: 100px; padding: 10px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; margin-bottom: 10px;}
+        .btn {
+            background: var(--text); color: white; border: none; padding: 10px 15px; border-radius: 6px;
+            cursor: pointer; font-weight: 500;
+        }
+        .btn:hover { background: #374151; }
+        .share-box { background: var(--card-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 15px; }
+
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Álbum Mundial 2026</h1>
+    <p>Seguí tus figuritas — tenés, faltan y repetidas</p>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value c-tenes" id="stat-tenes">0</div>
+            <div class="stat-label">Tenés</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value c-faltan" id="stat-faltan">640</div>
+            <div class="stat-label">Faltan</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value c-rep" id="stat-repetidas">0</div>
+            <div class="stat-label">Repetidas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="stat-progreso">0%</div>
+            <div class="stat-label">Completado</div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('album')">Álbum</button>
+        <button class="tab" onclick="switchTab('ingresar')">Ingresar números</button>
+        <button class="tab" onclick="switchTab('compartir')">Compartir</button>
+    </div>
+
+    <div id="tab-album" class="tab-content active">
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <button class="btn" style="background: white; color: var(--text); border: 1px solid var(--border);" onclick="renderGrid('todas')">Todas</button>
+            <button class="btn" style="background: white; color: var(--text); border: 1px solid var(--border);" onclick="renderGrid('faltan')">Faltan</button>
+            <button class="btn" style="background: white; color: var(--text); border: 1px solid var(--border);" onclick="renderGrid('repetidas')">Repetidas</button>
+        </div>
+        <div class="stickers-grid" id="grid"></div>
+    </div>
+
+    <div id="tab-ingresar" class="tab-content">
+        <h3>Carga rápida</h3>
+        <p>Ingresa los números separados por comas o espacios (ej: 1, 5, 10-15)</p>
+        <textarea id="bulk-input" placeholder="Ej: 1, 4, 7, 20-25"></textarea>
+        <button class="btn" onclick="bulkAdd()">Agregar como TENGO</button>
+    </div>
+
+    <div id="tab-compartir" class="tab-content">
+        <h3>Lista para intercambiar</h3>
+        <p>Copia este texto para enviarlo por WhatsApp a tus amigos.</p>
+        <div class="share-box">
+            <textarea id="share-text" style="height: 150px; font-family: monospace;" readonly></textarea>
+        </div>
+        <button class="btn" onclick="copyShareText()">Copiar al portapapeles</button>
+    </div>
+
+</div>
+
+<script>
+    const TOTAL_STICKERS = 640;
+    let albumData = JSON.parse(localStorage.getItem('albumData2026')) || {};
+
+    function init() {
+        updateStats();
+        renderGrid('todas');
+    }
+
+    function toggleSticker(num) {
+        let count = albumData[num] || 0;
+        if (count === 0) albumData[num] = 1; // Tengo
+        else if (count >= 1 && count < 10) albumData[num] = count + 1; // Repetida (+1)
+        else albumData[num] = 0; // Vuelve a cero
+        
+        saveData();
+        updateStats();
+        renderGrid(window.currentFilter || 'todas');
+    }
+
+    function renderGrid(filter) {
+        window.currentFilter = filter;
+        const grid = document.getElementById('grid');
+        grid.innerHTML = '';
+        
+        for (let i = 1; i <= TOTAL_STICKERS; i++) {
+            const count = albumData[i] || 0;
+            
+            // Lógica de filtrado
+            if (filter === 'faltan' && count > 0) continue;
+            if (filter === 'repetidas' && count < 2) continue;
+
+            const div = document.createElement('div');
+            div.className = 'sticker';
+            div.innerText = i;
+            
+            if (count > 0) div.classList.add('tengo');
+            if (count > 1) {
+                div.classList.replace('tengo', 'repetida');
+                const badge = document.createElement('div');
+                badge.className = 'badge';
+                badge.innerText = `+${count - 1}`;
+                div.appendChild(badge);
+            }
+            
+            div.onclick = () => toggleSticker(i);
+            grid.appendChild(div);
+        }
+    }
+
+    function updateStats() {
+        let tenes = 0, repetidas = 0;
+        for (let i = 1; i <= TOTAL_STICKERS; i++) {
+            const count = albumData[i] || 0;
+            if (count > 0) tenes++;
+            if (count > 1) repetidas += (count - 1);
+        }
+        
+        document.getElementById('stat-tenes').innerText = tenes;
+        document.getElementById('stat-faltan').innerText = TOTAL_STICKERS - tenes;
+        document.getElementById('stat-repetidas').innerText = repetidas;
+        document.getElementById('stat-progreso').innerText = Math.round((tenes / TOTAL_STICKERS) * 100) + '%';
+        
+        generateShareText();
+    }
+
+    function saveData() {
+        localStorage.setItem('albumData2026', JSON.stringify(albumData));
+    }
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById('tab-' + tabId).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    function bulkAdd() {
+        const input = document.getElementById('bulk-input').value;
+        const regex = /(\d+)(?:\s*-\s*(\d+))?/g;
+        let match;
+        let added = 0;
+        
+        while ((match = regex.exec(input)) !== null) {
+            let start = parseInt(match[1]);
+            let end = match[2] ? parseInt(match[2]) : start;
+            
+            for (let i = start; i <= end; i++) {
+                if (i >= 1 && i <= TOTAL_STICKERS) {
+                    albumData[i] = (albumData[i] || 0) + 1;
+                    added++;
+                }
+            }
+        }
+        
+        if (added > 0) {
+            saveData();
+            updateStats();
+            renderGrid(window.currentFilter || 'todas');
+            document.getElementById('bulk-input').value = '';
+            alert('¡Figuritas agregadas con éxito!');
+        }
+    }
+
+    function generateShareText() {
+        let faltan = [], repetidas = [];
+        for (let i = 1; i <= TOTAL_STICKERS; i++) {
+            const count = albumData[i] || 0;
+            if (count === 0) faltan.push(i);
+            if (count > 1) repetidas.push(i);
+        }
+        
+        const text = `🏆 Álbum Mundial 2026\n\n🔄 REPETIDAS:\n${repetidas.length > 0 ? repetidas.join(', ') : 'Ninguna por ahora'}\n\n❌ ME FALTAN:\n${faltan.join(', ')}\n\n¿Cambiamos?`;
+        document.getElementById('share-text').value = text;
+    }
+
+    function copyShareText() {
+        const textArea = document.getElementById('share-text');
+        textArea.select();
+        document.execCommand('copy');
+        alert('¡Texto copiado al portapapeles!');
+    }
+
+    // Inicializar app
+    init();
+</script>
+</body>
+</html>
