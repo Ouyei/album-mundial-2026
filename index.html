@@ -158,7 +158,7 @@
 </div>
 
 <script>
-    // Mapeo de banderas (ISO 3166-1 alpha-2)
+    // Mapeo de banderas para las imágenes de la web
     const flags = {
         MEX: "mx", RSA: "za", KOR: "kr", CZE: "cz", CAN: "ca", BIH: "ba", QAT: "qa", SUI: "ch",
         BRA: "br", MAR: "ma", HAI: "ht", SCO: "gb-sct", USA: "us", PAR: "py", AUS: "au", TUR: "tr",
@@ -166,6 +166,17 @@
         BEL: "be", EGY: "eg", IRN: "ir", NZL: "nz", ESP: "es", CPV: "cv", KSA: "sa", URU: "uy",
         FRA: "fr", SEN: "sn", IRQ: "iq", NOR: "no", ARG: "ar", ALG: "dz", AUT: "at", JOR: "jo",
         POR: "pt", COD: "cd", UZB: "uz", COL: "co", ENG: "gb-eng", CRO: "hr", GHA: "gh", PAN: "pa"
+    };
+
+    // Mapeo de Emojis para el texto de WhatsApp
+    const flagEmojis = {
+        MEX: "🇲🇽", RSA: "🇿🇦", KOR: "🇰🇷", CZE: "🇨🇿", CAN: "🇨🇦", BIH: "🇧🇦", QAT: "🇶🇦", SUI: "🇨🇭",
+        BRA: "🇧🇷", MAR: "🇲🇦", HAI: "🇭🇹", SCO: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", USA: "🇺🇸", PAR: "🇵🇾", AUS: "🇦🇺", TUR: "🇹🇷",
+        GER: "🇩🇪", CUW: "🇨🇼", CIV: "🇨🇮", ECU: "🇪🇨", NED: "🇳🇱", JAP: "🇯🇵", SWE: "🇸🇪", TUN: "🇹🇳",
+        BEL: "🇧🇪", EGY: "🇪🇬", IRN: "🇮🇷", NZL: "🇳🇿", ESP: "🇪🇸", CPV: "🇨🇻", KSA: "🇸🇦", URU: "🇺🇾",
+        FRA: "🇫🇷", SEN: "🇸🇳", IRQ: "🇮🇶", NOR: "🇳🇴", ARG: "🇦🇷", ALG: "🇩🇿", AUT: "🇦🇹", JOR: "🇯🇴",
+        POR: "🇵🇹", COD: "🇨🇩", UZB: "🇺🇿", COL: "🇨🇴", ENG: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", CRO: "🇭🇷", GHA: "🇬🇭", PAN: "🇵🇦",
+        FWC: "🏆", CC: "🥤" // Emojis para las secciones especiales
     };
 
     // Estructura por grupos del Mundial 2026
@@ -392,8 +403,16 @@
                 if (count === 0) sectionFaltan.push(i);
                 if (count > 1) sectionRepetidas.push(`${i}(+${count-1})`);
             }
-            if (sectionFaltan.length > 0) faltanText.push(`*${section.prefix}:* ${sectionFaltan.join(', ')}`);
-            if (sectionRepetidas.length > 0) repetidasText.push(`*${section.prefix}:* ${sectionRepetidas.join(', ')}`);
+            
+            // Obtenemos el emoji correspondiente (si no existe, ponemos un guión o vacío)
+            const emoji = flagEmojis[section.prefix] || "✨";
+
+            if (sectionFaltan.length > 0) {
+                faltanText.push(`${emoji} ${section.prefix}: ${sectionFaltan.join(', ')}`);
+            }
+            if (sectionRepetidas.length > 0) {
+                repetidasText.push(`${emoji} ${section.prefix}: ${sectionRepetidas.join(', ')}`);
+            }
         }));
         
         const repesTexto = repetidasText.length > 0 ? repetidasText.join('\n') : 'Ninguna por ahora';
