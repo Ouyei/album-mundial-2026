@@ -283,7 +283,7 @@
                     stickerDiv.classList.replace('tengo', 'repetida');
                     const badge = document.createElement('div');
                     badge.className = 'badge';
-                    badge.innerText = `x${count}`;
+                    badge.innerText = `+${count - 1}`; // ACA ESTA LA CORRECCION VISUAL
                     stickerDiv.appendChild(badge);
                 }
                 
@@ -400,7 +400,7 @@
             for (let i = 1; i <= section.count; i++) {
                 const count = albumData[`${section.prefix}-${i}`] || 0;
                 if (count === 0) sectionFaltan.push(i);
-                if (count > 1) sectionRepetidas.push(`${i}(x${count-1})`);
+                if (count > 1) sectionRepetidas.push(`${i} (+${count-1})`); // ACA ESTA LA CORRECCION DEL TEXTO
             }
             
             if (sectionFaltan.length > 0) faltanText.push(`*${section.prefix}:* ${sectionFaltan.join(', ')}`);
