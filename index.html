@@ -401,17 +401,21 @@
             for (let i = 1; i <= section.count; i++) {
                 const count = albumData[`${section.prefix}-${i}`] || 0;
                 if (count === 0) sectionFaltan.push(i);
-                if (count > 1) sectionRepetidas.push(`${i}(+${count-1})`);
+                
+                // Cambio aquí: Si hay más de 1 (es decir, está repetida), 
+                // solo sumamos el número de la figurita (i), sin el (+X).
+                if (count > 1) sectionRepetidas.push(i);
             }
             
-            // Obtenemos el emoji correspondiente (si no existe, ponemos un guión o vacío)
-            const emoji = flagEmojis[section.prefix] || "✨";
+            // Obtenemos el emoji correspondiente (si no existe, ponemos un espacio vacío)
+            const emoji = flagEmojis[section.prefix] || "";
 
+            // Formato exacto: Bandera Prefijo: Números limpios
             if (sectionFaltan.length > 0) {
-                faltanText.push(`${emoji} ${section.prefix}: ${sectionFaltan.join(', ')}`);
+                faltanText.push(`${emoji} ${section.prefix}: ${sectionFaltan.join(', ')}`.trim());
             }
             if (sectionRepetidas.length > 0) {
-                repetidasText.push(`${emoji} ${section.prefix}: ${sectionRepetidas.join(', ')}`);
+                repetidasText.push(`${emoji} ${section.prefix}: ${sectionRepetidas.join(', ')}`.trim());
             }
         }));
         
