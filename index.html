@@ -395,7 +395,11 @@
             if (sectionFaltan.length > 0) faltanText.push(`*${section.prefix}:* ${sectionFaltan.join(', ')}`);
             if (sectionRepetidas.length > 0) repetidasText.push(`*${section.prefix}:* ${sectionRepetidas.join(', ')}`);
         }));
-        document.getElementById('share-text').value = `⚽ ÁLBUM DE DANTE (Mundial 2026)\n\n💜 REPETIDAS:\n${repetidasText.join('\n')}\n\n❌ FALTAN:\n${faltanText.join('\n')}\n\n¿Cambiamos? 🟢🟣⚪`;
+        
+        const repesTexto = repetidasText.length > 0 ? repetidasText.join('\n') : 'Ninguna por ahora';
+        const faltanTexto = faltanText.length > 0 ? faltanText.join('\n') : '¡Álbum lleno!';
+
+        document.getElementById('share-text').value = `⚽ ÁLBUM DE DANTE (Mundial 2026) ⚽\n\n🔄 REPETIDAS:\n${repesTexto}\n\n😢 FALTAN:\n${faltanTexto}\n\n¿Cambiamos? 🫂`;
     }
 
     function copyShareText() {
