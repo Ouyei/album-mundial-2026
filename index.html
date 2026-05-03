@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dante - Álbum Mundial</title>
+    <title>Álbum de Dante - D.S.C.</title>
+    
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     
@@ -13,15 +14,17 @@
             --dsc-blanco: #ffffff;
             --dsc-violeta-claro: #7b4ba3;
             --dsc-accent: #f59e0b; 
-            --bg: #f0f2f5;
-            --text: #1c1e21;
+            --bg: #f3f4f6;
+            --text: #1f2937;
+            --border: #d1d5db;
         }
 
         body { 
             font-family: -apple-system, system-ui, sans-serif; 
             background-color: var(--bg); 
+            color: var(--text);
             margin: 0; padding: 0; 
-            padding-bottom: 80px; /* Espacio para la barra inferior */
+            padding-bottom: 80px;
             user-select: none;
         }
 
@@ -34,183 +37,190 @@
             position: sticky;
             top: 0; z-index: 100;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            display: flex; align-items: center; justify-content: center; gap: 10px;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
         }
-        .header img { height: 40px; }
-        .header h1 { margin: 0; font-size: 18px; text-transform: uppercase; }
+        .header img { height: 35px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3)); }
+        .header h1 { margin: 0; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; }
 
         /* Stats bar */
         .stats-bar {
             background: white;
             display: flex;
             justify-content: space-around;
-            padding: 10px 0;
-            border-bottom: 1px solid #ddd;
-            font-size: 12px;
-            font-weight: bold;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 11px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
         }
-        .stat-item span { display: block; font-size: 18px; color: var(--dsc-violeta); text-align: center; }
+        .stat-item span { display: block; font-size: 20px; font-weight: bold; color: var(--dsc-violeta); text-align: center; margin-bottom: 2px;}
 
-        /* Barra de Navegación Inferior */
+        /* Bottom Nav */
         .bottom-nav {
             position: fixed;
             bottom: 0; width: 100%;
             background: white;
             display: flex;
             height: 65px;
-            border-top: 1px solid #ddd;
+            border-top: 1px solid var(--border);
             box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
             z-index: 1000;
         }
         .nav-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #65676b;
-            font-size: 11px;
-            text-decoration: none;
-            cursor: pointer;
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: #6b7280; font-size: 12px; font-weight: 600; cursor: pointer;
         }
         .nav-item.active { color: var(--dsc-violeta); }
-        .nav-icon { font-size: 24px; margin-bottom: 2px; }
+        .nav-icon { font-size: 22px; margin-bottom: 4px; }
 
-        /* Contenido */
-        .content { padding: 15px; }
+        /* Content Area */
+        .content { padding: 15px; max-width: 600px; margin: 0 auto; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* Estilo de Figuritas */
-        .group-header { font-size: 14px; font-weight: bold; padding: 10px 5px; color: #555; background: #e4e6eb; border-radius: 5px; margin: 15px 0 10px 0; }
-        .stickers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; }
-        .sticker { 
-            aspect-ratio: 1; background: white; border: 1px solid #ccc; border-radius: 8px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            position: relative; font-weight: bold;
-        }
-        .sticker.tengo { background: var(--dsc-violeta); color: white; border-color: var(--dsc-violeta); }
-        .sticker.repetida { background: var(--dsc-violeta-claro); color: white; border-color: var(--dsc-accent); border-width: 2px; }
-        .badge { position: absolute; top: -5px; right: -5px; background: var(--dsc-accent); color: var(--dsc-violeta); border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid white; }
+        /* Filtros */
+        .filtros { display: flex; gap: 8px; margin-bottom: 20px; }
+        .btn-filtro { flex: 1; background: white; border: 2px solid var(--dsc-violeta); color: var(--dsc-violeta); padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px;}
+        .btn-filtro.active { background: var(--dsc-violeta); color: white; }
 
-        /* Inputs y Botones */
-        textarea { width: 100%; height: 100px; border-radius: 10px; border: 1px solid #ccc; padding: 10px; box-sizing: border-box; font-size: 16px; }
-        .btn { background: var(--dsc-violeta); color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: bold; font-size: 16px; margin-top: 10px; }
-        .btn-outline { background: white; color: var(--dsc-violeta); border: 1px solid var(--dsc-violeta); }
+        /* Estilos Secciones */
+        .group-header { font-size: 14px; font-weight: bold; padding: 10px 15px; color: white; background: #374151; border-radius: 8px; margin: 25px 0 15px 0; text-transform: uppercase; }
+        .album-section { background: white; padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 15px; }
+        .section-title { display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--border); padding-bottom: 8px; margin-bottom: 12px; font-size: 16px; font-weight: bold; color: var(--dsc-violeta); }
+        .flag-img { width: 28px; height: 20px; border-radius: 3px; border: 1px solid #ddd; object-fit: cover; }
+
+        /* Grid Figuritas */
+        .stickers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); gap: 8px; }
+        .sticker { 
+            aspect-ratio: 1; background: var(--bg); border: 2px solid var(--border); border-radius: 8px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: relative; font-weight: bold; cursor: pointer; transition: 0.1s;
+        }
+        .sticker-num { font-size: 16px; }
+        .sticker-prefix { font-size: 9px; color: #666; margin-bottom: 1px; }
+
+        .sticker.tengo { background: var(--dsc-violeta); color: white; border-color: var(--dsc-violeta); }
+        .sticker.repetida { background: var(--dsc-violeta-claro); color: white; border-color: var(--dsc-accent); border-width: 3px; }
+        .badge { position: absolute; top: -6px; right: -6px; background: var(--dsc-accent); color: var(--dsc-violeta); border-radius: 50%; width: 20px; height: 20px; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+
+        /* Formularios */
+        .card { background: white; padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 15px; }
+        textarea { width: 100%; height: 120px; border-radius: 8px; border: 2px solid var(--border); padding: 12px; box-sizing: border-box; font-size: 16px; font-family: sans-serif; }
+        .btn { background: var(--dsc-violeta); color: white; border: none; padding: 14px; border-radius: 8px; width: 100%; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <img src="dsc-escudo.png" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/a/a1/Defensor_Sporting.svg'">
+        <img src="dsc-escudo.png" alt="D.S.C." onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/a/a1/Defensor_Sporting.svg'">
         <h1>Álbum de Dante</h1>
     </div>
 
     <div class="stats-bar">
-        <div class="stat-item">Tenés<span id="stat-tenes">0</span></div>
-        <div class="stat-item">Faltan<span id="stat-faltan">0</span></div>
-        <div class="stat-item">Repes<span id="stat-repes">0</span></div>
-        <div class="stat-item">%<span id="stat-progreso">0</span></div>
+        <div class="stat-item"><span id="stat-tenes">0</span>Tenés</div>
+        <div class="stat-item"><span id="stat-faltan">0</span>Faltan</div>
+        <div class="stat-item"><span id="stat-repes">0</span>Repes</div>
+        <div class="stat-item"><span id="stat-progreso">0%</span>Álbum</div>
     </div>
 
     <div class="content">
         <div id="view-album" class="tab-content active">
+            <div class="filtros">
+                <button class="btn-filtro active" onclick="renderAlbum('todas')">Todas</button>
+                <button class="btn-filtro" onclick="renderAlbum('faltan')">Faltan</button>
+                <button class="btn-filtro" onclick="renderAlbum('repetidas')">Repes</button>
+            </div>
             <div id="album-render"></div>
         </div>
 
         <div id="view-paquetes" class="tab-content">
-            <h2>Nuevas Figuritas 📦</h2>
-            <p>Escribí los números (Ej: MEX 1, 4-6, URU 10)</p>
-            <textarea id="input-paquetes" placeholder="Cargá acá..."></textarea>
-            <button class="btn" onclick="bulkAction(true)">Sumar al Álbum</button>
+            <div class="card">
+                <h3 style="margin-top:0; color:var(--dsc-violeta)">Nuevas Figuritas 📦</h3>
+                <p style="font-size:13px; color:#666;">Ejemplo: <code>MEX 1, 2, 5-8, ARG 10</code></p>
+                <textarea id="input-paquetes" placeholder="Cargá acá tus paquetes..."></textarea>
+                <button class="btn" onclick="bulkAction(true)">Sumar al Álbum</button>
+            </div>
         </div>
 
         <div id="view-opciones" class="tab-content">
-            <h2>Opciones ⚙️</h2>
-            <button class="btn btn-outline" onclick="copyShareText()">📋 Copiar Lista WhatsApp</button>
-            <div style="margin-top: 40px; border: 1px dashed red; padding: 15px; border-radius: 10px;">
-                <h4 style="color:red; margin-top:0;">Zona de Control</h4>
-                <textarea id="input-admin" placeholder="Números para borrar..."></textarea>
-                <button class="btn" style="background:red;" onclick="bulkAction(false)">Eliminar Errores</button>
-                <button class="btn" style="background:black;" onclick="resetAll()">Resetear Todo</button>
+            <div class="card">
+                <h3 style="margin-top:0; color:var(--dsc-violeta)">Intercambio 📲</h3>
+                <textarea id="share-text" style="height: 180px; font-family: monospace; background:#f9fafb;" readonly></textarea>
+                <button class="btn" onclick="copyShareText()">📋 Copiar para WhatsApp</button>
+            </div>
+
+            <div class="card" style="border-color: #ef4444;">
+                <h3 style="margin-top:0; color:#ef4444">Zona Admin ⚙️</h3>
+                <textarea id="input-admin" placeholder="Números a borrar..." style="height: 60px; border-color:#fca5a5;"></textarea>
+                <button class="btn" style="background:#ef4444" onclick="bulkAction(false)">Eliminar Errores</button>
+                <button class="btn" style="background:#111" onclick="resetAll()">⚠️ Resetear Todo</button>
             </div>
         </div>
     </div>
 
     <nav class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('album', this)">
-            <div class="nav-icon">📖</div>
-            <span>Álbum</span>
+            <div class="nav-icon">📖</div><span>Álbum</span>
         </div>
         <div class="nav-item" onclick="switchTab('paquetes', this)">
-            <div class="nav-icon">📦</div>
-            <span>Paquetes</span>
+            <div class="nav-icon">📦</div><span>Paquetes</span>
         </div>
         <div class="nav-item" onclick="switchTab('opciones', this)">
-            <div class="nav-icon">⚙️</div>
-            <span>Opciones</span>
+            <div class="nav-icon">⚙️</div><span>Opciones</span>
         </div>
     </nav>
 
     <script>
-        // --- CONFIGURACIÓN FIREBASE ---
-        // PEGA TUS CREDENCIALES AQUÍ ABAJO:
-        <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyB4Fua85yydqUh70xFmNjH8ldp1i7EWS-Y",
-    authDomain: "album-dante.firebaseapp.com",
-    databaseURL: "https://album-dante-default-rtdb.firebaseio.com",
-    projectId: "album-dante",
-    storageBucket: "album-dante.firebasestorage.app",
-    messagingSenderId: "476563744693",
-    appId: "1:476563744693:web:a9e8a040359be30f3b1bfc",
-    measurementId: "G-5L37646BS0"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
-
+        // --- CONFIGURACIÓN FIREBASE INTEGRADA ---
         const firebaseConfig = {
-            apiKey: "TU_API_KEY",
-            authDomain: "TU_PROYECTO.firebaseapp.com",
-            databaseURL: "https://TU_PROYECTO.firebaseio.com",
-            projectId: "TU_PROYECTO",
-            storageBucket: "TU_PROYECTO.appspot.com",
-            messagingSenderId: "TU_ID",
-            appId: "TU_APP_ID"
+            apiKey: "AIzaSyB4Fua85yydqUh70xFmNjH8ldp1i7EWS-Y",
+            authDomain: "album-dante.firebaseapp.com",
+            databaseURL: "https://album-dante-default-rtdb.firebaseio.com",
+            projectId: "album-dante",
+            storageBucket: "album-dante.firebasestorage.app",
+            messagingSenderId: "476563744693",
+            appId: "1:476563744693:web:a9e8a040359be30f3b1bfc",
+            measurementId: "G-5L37646BS0"
         };
 
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.database().ref('album_dante');
-
-        // Mapa del álbum (el mismo que ya teníamos)
-        const albumMap = [
-            { group: "Grupo A", teams: [{ name: "MÉXICO", prefix: "MEX", count: 20 }, { name: "SUDÁFRICA", prefix: "RSA", count: 20 }] },
-            { group: "Grupo B", teams: [{ name: "CANADÁ", prefix: "CAN", count: 20 }, { name: "SUIZA", prefix: "SUI", count: 20 }] },
-            // ... (Agregar aquí todos los equipos que faltan para completar los 993 stickers)
-            { group: "Extras", teams: [{ name: "FIFA", prefix: "FWC", count: 19 }, { name: "COCA COLA", prefix: "CC", count: 14 }] }
-        ];
+        const db = firebase.database().ref('album_dante_2026');
 
         let albumData = {};
+        window.currentFilter = 'todas';
 
-        // Escuchar cambios en tiempo real
+        // Mapeos de banderas y emojis
+        const flags = { MEX:"mx", RSA:"za", KOR:"kr", CZE:"cz", CAN:"ca", BIH:"ba", QAT:"qa", SUI:"ch", BRA:"br", MAR:"ma", HAI:"ht", SCO:"gb-sct", USA:"us", PAR:"py", AUS:"au", TUR:"tr", GER:"de", CUW:"cw", CIV:"ci", ECU:"ec", NED:"nl", JAP:"jp", SWE:"se", TUN:"tn", BEL:"be", EGY:"eg", IRN:"ir", NZL:"nz", ESP:"es", CPV:"cv", KSA:"sa", URU:"uy", FRA:"fr", SEN:"sn", IRQ:"iq", NOR:"no", ARG:"ar", ALG:"dz", AUT:"at", JOR:"jo", POR:"pt", COD:"cd", UZB:"uz", COL:"co", ENG:"gb-eng", CRO:"hr", GHA:"gh", PAN:"pa" };
+        const flagEmojis = { MEX:"🇲🇽", RSA:"🇿🇦", KOR:"🇰🇷", CZE:"🇨🇿", CAN:"🇨🇦", BIH:"🇧🇦", QAT:"🇶🇦", SUI:"🇨🇭", BRA:"🇧🇷", MAR:"🇲🇦", HAI:"🇭🇹", SCO:"🏴󠁧󠁢󠁳󠁣󠁴󠁿", USA:"🇺🇸", PAR:"🇵🇾", AUS:"🇦🇺", TUR:"🇹🇷", GER:"🇩🇪", CUW:"🇨🇼", CIV:"🇨🇮", ECU:"🇪🇨", NED:"🇳🇱", JAP:"🇯🇵", SWE:"🇸🇪", TUN:"🇹🇳", BEL:"🇧🇪", EGY:"🇪🇬", IRN:"🇮🇷", NZL:"🇳🇿", ESP:"🇪🇸", CPV:"🇨🇻", KSA:"🇸🇦", URU:"🇺🇾", FRA:"🇫🇷", SEN:"🇸🇳", IRQ:"🇮🇶", NOR:"🇳🇴", ARG:"🇦🇷", ALG:"🇩🇿", AUT:"🇦🇹", JOR:"🇯🇴", POR:"🇵🇹", COD:"🇨🇩", UZB:"🇺🇿", COL:"🇨🇴", ENG:"🏴󠁧󠁢󠁥󠁮󠁧󠁿", CRO:"🇭🇷", GHA:"🇬🇭", PAN:"🇵🇦", FWC:"🏆", CC:"🥤" };
+
+        const albumMap = [
+            { group: "Grupo A", teams: [{ name:"MÉXICO", prefix:"MEX", count:20 }, { name:"SUDÁFRICA", prefix:"RSA", count:20 }, { name:"COREA DEL SUR", prefix:"KOR", count:20 }, { name:"CHEQUIA", prefix:"CZE", count:20 }] },
+            { group: "Grupo B", teams: [{ name:"CANADÁ", prefix:"CAN", count:20 }, { name:"BOSNIA", prefix:"BIH", count:20 }, { name:"QATAR", prefix:"QAT", count:20 }, { name:"SUIZA", prefix:"SUI", count:20 }] },
+            { group: "Grupo C", teams: [{ name:"BRASIL", prefix:"BRA", count:20 }, { name:"MARRUECOS", prefix:"MAR", count:20 }, { name:"HAITÍ", prefix:"HAI", count:20 }, { name:"ESCOCIA", prefix:"SCO", count:20 }] },
+            { group: "Grupo D", teams: [{ name:"USA", prefix:"USA", count:20 }, { name:"PARAGUAY", prefix:"PAR", count:20 }, { name:"AUSTRALIA", prefix:"AUS", count:20 }, { name:"TURQUÍA", prefix: "TUR", count:20 }] },
+            { group: "Grupo E", teams: [{ name:"ALEMANIA", prefix:"GER", count:20 }, { name:"CURAZAO", prefix:"CUW", count:20 }, { name:"COSTA DE MARFIL", prefix:"CIV", count:20 }, { name:"ECUADOR", prefix: "ECU", count:20 }] },
+            { group: "Grupo F", teams: [{ name:"PAÍSES BAJOS", prefix:"NED", count:20 }, { name:"JAPÓN", prefix:"JAP", count:20 }, { name:"SUECIA", prefix:"SWE", count:20 }, { name:"TÚNEZ", prefix: "TUN", count:20 }] },
+            { group: "Grupo G", teams: [{ name:"BÉLGICA", prefix:"BEL", count:20 }, { name:"EGIPTO", prefix:"EGY", count:20 }, { name:"IRÁN", prefix: "IRN", count:20 }, { name:"NUEVA ZELANDA", prefix: "NZL", count:20 }] },
+            { group: "Grupo H", teams: [{ name:"ESPAÑA", prefix:"ESP", count:20 }, { name:"CABO VERDE", prefix:"CPV", count:20 }, { name:"ARABIA SAUDITA", prefix: "KSA", count:20 }, { name:"URUGUAY", prefix: "URU", count:20 }] },
+            { group: "Grupo I", teams: [{ name:"FRANCIA", prefix:"FRA", count:20 }, { name:"SENEGAL", prefix:"SEN", count:20 }, { name:"IRAK", prefix: "IRQ", count:20 }, { name:"NORUEGA", prefix: "NOR", count:20 }] },
+            { group: "Grupo J", teams: [{ name:"ARGENTINA", prefix:"ARG", count:20 }, { name:"ARGELIA", prefix:"ALG", count:20 }, { name:"AUSTRIA", prefix: "AUT", count:20 }, { name:"JORDANIA", prefix: "JOR", count:20 }] },
+            { group: "Grupo K", teams: [{ name:"PORTUGAL", prefix:"POR", count:20 }, { name:"RD CONGO", prefix:"COD", count:20 }, { name:"UZBEKISTÁN", prefix: "UZB", count:20 }, { name:"COLOMBIA", prefix: "COL", count:20 }] },
+            { group: "Grupo L", teams: [{ name:"INGLATERRA", prefix:"ENG", count:20 }, { name:"CROACIA", prefix:"CRO", count:20 }, { name:"GHANA", prefix: "GHA", count:20 }, { name:"PANAMÁ", prefix: "PAN", count:20 }] },
+            { group: "Extras", teams: [{ name:"FIFA / ESPECIALES", prefix:"FWC", count:19 }, { name:"COCA COLA", prefix:"CC", count:14 }] }
+        ];
+
+        let TOTAL_STICKERS = 0;
+        albumMap.forEach(g => g.teams.forEach(t => TOTAL_STICKERS += t.count));
+
+        // Sincronización en Tiempo Real con Firebase
         db.on('value', (snapshot) => {
             albumData = snapshot.val() || {};
             renderAll();
         });
 
         function renderAll() {
-            renderAlbum();
+            renderAlbum(window.currentFilter);
             updateStats();
         }
 
@@ -220,51 +230,64 @@
             db.child(key).set(count);
         }
 
-        function renderAlbum() {
+        function renderAlbum(filter) {
+            window.currentFilter = filter;
+            document.querySelectorAll('.btn-filtro').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase().includes(filter.substring(0,3))));
             const container = document.getElementById('album-render');
             container.innerHTML = '';
-            albumMap.forEach(g => {
-                const gHeader = document.createElement('div');
-                gHeader.className = 'group-header';
-                gHeader.innerText = g.group;
-                container.appendChild(gHeader);
+            
+            albumMap.forEach(groupBlock => {
+                let groupVisible = false;
+                const groupWrapper = document.createElement('div');
+                const header = document.createElement('div');
+                header.className = 'group-header'; header.innerText = groupBlock.group;
+                groupWrapper.appendChild(header);
 
-                g.teams.forEach(t => {
-                    const grid = document.createElement('div');
-                    grid.className = 'stickers-grid';
-                    for(let i=1; i<=t.count; i++){
-                        const key = `${t.prefix}-${i}`;
+                groupBlock.teams.forEach(section => {
+                    const sectionDiv = document.createElement('div');
+                    sectionDiv.className = 'album-section';
+                    const titleCont = document.createElement('div'); titleCont.className = 'section-title';
+                    const flagUrl = flags[section.prefix] ? `https://flagcdn.com/w40/${flags[section.prefix]}.png` : '';
+                    titleCont.innerHTML = flagUrl ? `<img class="flag-img" src="${flagUrl}"> ${section.name}` : section.name;
+                    sectionDiv.appendChild(titleCont);
+                    
+                    const grid = document.createElement('div'); grid.className = 'stickers-grid';
+                    let stickersVisible = 0;
+
+                    for (let i = 1; i <= section.count; i++) {
+                        const key = `${section.prefix}-${i}`;
                         const count = albumData[key] || 0;
+                        if (filter === 'faltan' && count > 0) continue;
+                        if (filter === 'repetidas' && count < 2) continue;
+                        stickersVisible++;
                         const div = document.createElement('div');
                         div.className = `sticker ${count > 0 ? 'tengo' : ''} ${count > 1 ? 'repetida' : ''}`;
-                        div.innerHTML = `<span style="font-size:8px">${t.prefix}</span>${i}`;
+                        div.innerHTML = `<span class="sticker-prefix">${section.prefix}</span>${i}`;
                         if(count > 1) div.innerHTML += `<div class="badge">+${count-1}</div>`;
                         div.onclick = () => toggleSticker(key);
                         grid.appendChild(div);
                     }
-                    container.appendChild(grid);
+                    if (stickersVisible > 0) { sectionDiv.appendChild(grid); groupWrapper.appendChild(sectionDiv); groupVisible = true; }
                 });
+                if (groupVisible) container.appendChild(groupWrapper);
             });
         }
 
         function updateStats() {
-            let t=0, r=0, total=993; // Ajustar total real
-            Object.values(albumData).forEach(v => {
-                if(v > 0) t++;
-                if(v > 1) r += (v-1);
-            });
+            let t=0, r=0;
+            Object.values(albumData).forEach(v => { if(v > 0) t++; if(v > 1) r += (v-1); });
             document.getElementById('stat-tenes').innerText = t;
-            document.getElementById('stat-faltan').innerText = total - t;
+            document.getElementById('stat-faltan').innerText = TOTAL_STICKERS - t;
             document.getElementById('stat-repes').innerText = r;
-            document.getElementById('stat-progreso').innerText = Math.round((t/total)*100);
+            document.getElementById('stat-progreso').innerText = Math.round((t/TOTAL_STICKERS)*100) + '%';
+            generateShareText();
         }
 
         function switchTab(tabId, el) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById('view-' + tabId).classList.add('active');
-            el.classList.add('active');
-            window.scrollTo(0,0);
+            el.classList.add('active'); window.scrollTo(0,0);
         }
 
         function bulkAction(isAdd) {
@@ -281,15 +304,32 @@
                     db.child(key).set(isAdd ? current + 1 : 0);
                 }
             }
-            document.getElementById(id).value = '';
+            document.getElementById(id).value = ''; 
             switchTab('album', document.querySelector('.nav-item'));
         }
 
-        function resetAll() { if(confirm('¿Borrar TODO?')) db.set(null); }
+        function resetAll() { if(confirm('¿Borrar TODO el álbum?')) db.set(null); }
+
+        function generateShareText() {
+            let fText = [], rText = [];
+            albumMap.forEach(g => g.teams.forEach(s => {
+                let sF = [], sR = [];
+                for (let i=1; i<=s.count; i++) {
+                    const c = albumData[`${s.prefix}-${i}`] || 0;
+                    if (c === 0) sF.push(i); if (c > 1) sR.push(i);
+                }
+                const emj = flagEmojis[s.prefix] || "";
+                if (sF.length > 0) fText.push(`${emj} ${s.prefix}: ${sF.join(', ')}`);
+                if (sR.length > 0) rText.push(`${emj} ${s.prefix}: ${sR.join(', ')}`);
+            }));
+            document.getElementById('share-text').value = `⚽ ÁLBUM DE DANTE (Mundial 2026) ⚽\n\n🔄 REPETIDAS:\n${rText.join('\n') || 'Ninguna'}\n\n😢 FALTAN:\n${fText.join('\n') || '¡Lleno!'}\n\n¿Cambiamos? 🫂`;
+        }
 
         function copyShareText() {
-            // Reutilizar la lógica de generación de texto que ya teníamos pero usando albumData
-            alert('Lógica de compartir copiada (igual a la versión anterior)');
+            const t = document.getElementById('share-text'); 
+            t.select(); t.setSelectionRange(0, 99999);
+            document.execCommand('copy'); 
+            alert('¡Lista copiada! Ya puedes pegarla en WhatsApp.');
         }
     </script>
 </body>
