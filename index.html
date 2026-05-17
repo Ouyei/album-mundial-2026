@@ -17,13 +17,20 @@
         body { font-family: -apple-system, system-ui, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; padding-bottom: 80px; user-select: none; }
 
         /* Header Fijo */
-        .header { background: var(--dsc-violeta); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; gap: 12px; }
-        .header img { height: 35px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3)); }
-        .header h1 { margin: 0; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; }
+        .header { background: var(--dsc-violeta); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; gap: 15px; }
+        
+        /* AJUSTE REQUISITO 1 Y 2: Logo más grande y sombra suavizada */
+        .header img { height: 48px; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2)); }
+        
+        .header h1 { margin: 0; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; }
         .logout-btn { position: absolute; right: 15px; background: rgba(255,255,255,0.2); border: none; color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px; cursor: pointer; }
 
         /* Login Overlay */
         #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dsc-violeta); z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
+        
+        /* AJUSTE REQUISITO 2: Sombra suavizada en login también */
+        #login-overlay > img { height: 100px; margin-bottom: 20px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+        
         .login-box { background: white; color: var(--text); padding: 30px; border-radius: 15px; width: 80%; max-width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
         .login-box input { width: 100%; padding: 12px; margin: 15px 0; border: 2px solid var(--border); border-radius: 8px; font-size: 16px; text-align: center; box-sizing: border-box;}
         .login-box button { background: var(--dsc-accent); color: var(--dsc-violeta); font-weight: 900; font-size: 16px; border: none; padding: 12px; width: 100%; border-radius: 8px; cursor: pointer; }
@@ -41,7 +48,7 @@
         .stat-item span { display: block; font-size: 20px; font-weight: bold; color: var(--dsc-violeta); text-align: center; margin-bottom: 2px;}
 
         /* Bottom Nav */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; height: 65px; border-top: 1px solid var(--border); z-index: 1000; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; height: 65px; border-top: 1px solid var(--border); box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 1000; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #6b7280; font-size: 12px; font-weight: 600; cursor: pointer; }
         .nav-item.active { color: var(--dsc-violeta); }
         .nav-icon { font-size: 22px; margin-bottom: 4px; }
@@ -83,7 +90,7 @@
             <h3>📜 Reglas de Convivencia</h3>
             <p>¡Hola vecino! Antes de empezar, recuerda:</p>
             <ul>
-                <li>Esto es un pasatiempo de Familiar para divertirnos en Comunidad.</li>
+                <li>Esto es un pasatiempo Familiar para divertirnos en Comunidad.</li>
                 <li>Por el momento, los intercambios son estrictamente <b>1 x 1</b>.</li>
                 <li>Al reservar una figurita, tienes <b>24 horas</b> para contactarnos y concretar. Si no, vuelve a estar disponible.</li>
                 <li>Tratemos de ser pacientes con las respuestas.</li>
@@ -93,7 +100,7 @@
     </div>
 
     <div id="login-overlay">
-        <img src="dsc-escudo.png" height="80" style="margin-bottom: 20px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3))" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/a/a1/Defensor_Sporting.svg'">
+        <img src="dsc-escudo.png" alt="D.S.C." onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/a/a1/Defensor_Sporting.svg'">
         <div class="login-box">
             <h2 style="margin-top:0; color:var(--dsc-violeta)">¡Hola Vecino! 👋</h2>
             <p style="font-size: 14px; color: #666;">Ingresa tu número de lote para intercambiar figuritas con Dante.</p>
@@ -179,7 +186,7 @@
     </nav>
 
     <script>
-        // --- CONFIGURACIÓN DE RED Y DATOS ---
+        // --- CONFIGURACIÓN DE RED Y DATOS (STAGING/BETA) ---
         const firebaseConfig = {
             apiKey: "AIzaSyB4Fua85yydqUh70xFmNjH8ldp1i7EWS-Y",
             authDomain: "album-dante.firebaseapp.com",
@@ -187,15 +194,14 @@
             projectId: "album-dante",
             storageBucket: "album-dante.firebasestorage.app",
             messagingSenderId: "476563744693",
-            appId: "1:476563744693:web:a9e8a040359be30f3b1bfc",
-            measurementId: "G-5L37646BS0"
+            appId: "1:476563744693:web:a9e8a040359be30f3b1bfc"
         };
         firebase.initializeApp(firebaseConfig);
         
-        // BASE DE DATOS BETA
+        // APUNTANDO A LA BASE DE DATOS BETA PARA PRUEBAS
         const db = firebase.database().ref('album_dante_beta'); 
 
-        const NUMERO_WHATSAPP_ADMIN = "59898619567"; // <--- PON AQUÍ TU NÚMERO DE WHATSAPP
+        const NUMERO_WHATSAPP_ADMIN = "59898619567"; // <--- PON AQUÍ TU NÚMERO
         const ADMIN_PASS = "Admin354";
         
         let currentUser = localStorage.getItem('dante_user_beta');
@@ -207,7 +213,7 @@
         let cartPedidas = []; 
         let cartOfrecidas = [];
 
-        // Banderas (JPN corregido)
+        // Banderas (Typo JPN corregido)
         const flags = { MEX:"mx", RSA:"za", KOR:"kr", CZE:"cz", CAN:"ca", BIH:"ba", QAT:"qa", SUI:"ch", BRA:"br", MAR:"ma", HAI:"ht", SCO:"gb-sct", USA:"us", PAR:"py", AUS:"au", TUR:"tr", GER:"de", CUW:"cw", CIV:"ci", ECU:"ec", NED:"nl", JPN:"jp", SWE:"se", TUN:"tn", BEL:"be", EGY:"eg", IRN:"ir", NZL:"nz", ESP:"es", CPV:"cv", KSA:"sa", URU:"uy", FRA:"fr", SEN:"sn", IRQ:"iq", NOR:"no", ARG:"ar", ALG:"dz", AUT:"at", JOR:"jo", POR:"pt", COD:"cd", UZB:"uz", COL:"co", ENG:"gb-eng", CRO:"hr", GHA:"gh", PAN:"pa" };
         const albumMap = [
             { group: "Grupo A", teams: [{ name:"MÉXICO", prefix:"MEX", count:20 }, { name:"SUDÁFRICA", prefix:"RSA", count:20 }, { name:"COREA DEL SUR", prefix:"KOR", count:20 }, { name:"CHEQUIA", prefix:"CZE", count:20 }] },
@@ -281,6 +287,7 @@
 
         function logout() {
             localStorage.removeItem('dante_user_beta');
+            localStorage.removeItem('dante_rules_accepted'); // Resetear reglas al salir
             location.reload();
         }
 
