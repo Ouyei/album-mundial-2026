@@ -28,6 +28,14 @@
         .login-box input { width: 100%; padding: 12px; margin: 15px 0; border: 2px solid var(--border); border-radius: 8px; font-size: 16px; text-align: center; box-sizing: border-box;}
         .login-box button { background: var(--dsc-accent); color: var(--dsc-violeta); font-weight: 900; font-size: 16px; border: none; padding: 12px; width: 100%; border-radius: 8px; cursor: pointer; }
 
+        /* Rules Overlay */
+        #rules-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; justify-content: center; align-items: center; }
+        .rules-box { background: white; padding: 25px; border-radius: 15px; width: 85%; max-width: 350px; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .rules-box h3 { color: var(--dsc-violeta); margin-top: 0; text-align: center; }
+        .rules-box p { font-size: 14px; color: #444; line-height: 1.5; }
+        .rules-box ul { padding-left: 20px; font-size: 14px; color: #444; margin-bottom: 20px; }
+        .rules-box li { margin-bottom: 10px; }
+
         /* Stats bar */
         .stats-bar { background: white; display: flex; justify-content: space-around; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; }
         .stat-item span { display: block; font-size: 20px; font-weight: bold; color: var(--dsc-violeta); text-align: center; margin-bottom: 2px;}
@@ -70,12 +78,26 @@
 </head>
 <body>
 
+    <div id="rules-overlay">
+        <div class="rules-box">
+            <h3>📜 Reglas de Convivencia</h3>
+            <p>¡Hola vecino! Antes de empezar, recuerda:</p>
+            <ul>
+                <li>Esto es un pasatiempo de padre e hijo para divertirnos en comunidad.</li>
+                <li>Los intercambios son estrictamente <b>1 x 1</b>.</li>
+                <li>Al reservar una figurita, tienes <b>24 horas</b> para contactarnos y concretar. Si no, vuelve a estar disponible.</li>
+                <li>Tratemos de ser pacientes con las respuestas.</li>
+            </ul>
+            <button class="btn" onclick="acceptRules()">¡Entendido, a jugar!</button>
+        </div>
+    </div>
+
     <div id="login-overlay">
         <img src="dsc-escudo.png" height="80" style="margin-bottom: 20px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3))" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/a/a1/Defensor_Sporting.svg'">
         <div class="login-box">
             <h2 style="margin-top:0; color:var(--dsc-violeta)">¡Hola Vecino! 👋</h2>
             <p style="font-size: 14px; color: #666;">Ingresa tu número de lote para intercambiar figuritas con Dante.</p>
-            <input type="text" id="login-input" placeholder="Ej: 307 (O clave Admin)">
+            <input type="text" id="login-input" placeholder="Ej: 354">
             <button onclick="login()">ENTRAR</button>
         </div>
     </div>
@@ -146,7 +168,7 @@
 
     <nav class="bottom-nav" id="nav-vecino" style="display:none;">
         <div class="nav-item active" onclick="switchTab('vecino-reservar', this)">
-            <div class="nav-icon">🎁</div><span>Pedir</span>
+            <div class="nav-icon">🔄</div><span>Cambiar</span>
         </div>
         <div class="nav-item" onclick="switchTab('vecino-ofrecer', this)">
             <div class="nav-icon">🤝</div><span>Ofrecer</span>
@@ -165,14 +187,15 @@
             projectId: "album-dante",
             storageBucket: "album-dante.firebasestorage.app",
             messagingSenderId: "476563744693",
-            appId: "1:476563744693:web:a9e8a040359be30f3b1bfc"
+            appId: "1:476563744693:web:a9e8a040359be30f3b1bfc",
+            measurementId: "G-5L37646BS0"
         };
         firebase.initializeApp(firebaseConfig);
         
-        // USAMOS UNA BASE DE DATOS BETA PARA PROBAR
+        // BASE DE DATOS BETA
         const db = firebase.database().ref('album_dante_beta'); 
 
-        const NUMERO_WHATSAPP_ADMIN = "59898619567"; // <--- PON AQUÍ TU NÚMERO
+        const NUMERO_WHATSAPP_ADMIN = "59898619567"; // <--- PON AQUÍ TU NÚMERO DE WHATSAPP
         const ADMIN_PASS = "Admin354";
         
         let currentUser = localStorage.getItem('dante_user_beta');
@@ -184,7 +207,7 @@
         let cartPedidas = []; 
         let cartOfrecidas = [];
 
-        // Corrección Typo: JPN
+        // Banderas (JPN corregido)
         const flags = { MEX:"mx", RSA:"za", KOR:"kr", CZE:"cz", CAN:"ca", BIH:"ba", QAT:"qa", SUI:"ch", BRA:"br", MAR:"ma", HAI:"ht", SCO:"gb-sct", USA:"us", PAR:"py", AUS:"au", TUR:"tr", GER:"de", CUW:"cw", CIV:"ci", ECU:"ec", NED:"nl", JPN:"jp", SWE:"se", TUN:"tn", BEL:"be", EGY:"eg", IRN:"ir", NZL:"nz", ESP:"es", CPV:"cv", KSA:"sa", URU:"uy", FRA:"fr", SEN:"sn", IRQ:"iq", NOR:"no", ARG:"ar", ALG:"dz", AUT:"at", JOR:"jo", POR:"pt", COD:"cd", UZB:"uz", COL:"co", ENG:"gb-eng", CRO:"hr", GHA:"gh", PAN:"pa" };
         const albumMap = [
             { group: "Grupo A", teams: [{ name:"MÉXICO", prefix:"MEX", count:20 }, { name:"SUDÁFRICA", prefix:"RSA", count:20 }, { name:"COREA DEL SUR", prefix:"KOR", count:20 }, { name:"CHEQUIA", prefix:"CZE", count:20 }] },
@@ -205,6 +228,13 @@
         let TOTAL_STICKERS = 0;
         albumMap.forEach(g => g.teams.forEach(t => TOTAL_STICKERS += t.count));
 
+        // Event listener para la tecla Enter en el login
+        document.getElementById('login-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+
         // Iniciar App
         checkLogin();
 
@@ -213,16 +243,28 @@
                 document.getElementById('login-overlay').style.display = 'flex';
             } else {
                 document.getElementById('login-overlay').style.display = 'none';
+                
                 if (currentUser === 'ADMIN') {
                     document.getElementById('nav-admin').style.display = 'flex';
                     document.getElementById('stats-admin').style.display = 'flex';
                     switchTab('admin-album', document.querySelector('#nav-admin .nav-item'));
                 } else {
+                    // Validar si aceptó las reglas comunitarias
+                    const rulesAccepted = localStorage.getItem('dante_rules_accepted');
+                    if (!rulesAccepted) {
+                        document.getElementById('rules-overlay').style.display = 'flex';
+                    }
+                    
                     document.getElementById('nav-vecino').style.display = 'flex';
                     switchTab('vecino-reservar', document.querySelector('#nav-vecino .nav-item'));
                 }
                 loadData();
             }
+        }
+
+        function acceptRules() {
+            localStorage.setItem('dante_rules_accepted', 'true');
+            document.getElementById('rules-overlay').style.display = 'none';
         }
 
         function login() {
@@ -433,10 +475,10 @@
             });
 
             // Armar Mensaje
-            let text = `¡Hola Lote 354! 👋 Soy el vecino del Lote ${currentUser}.\n\n`;
-            if(cartPedidas.length > 0) text += `🎁 *Me sirven las tuyas:* ${cartPedidas.join(', ')} (Ya las reservé en la app).\n`;
-            if(cartOfrecidas.length > 0) text += `🤝 *Tengo para darte:* ${cartOfrecidas.join(', ')}.\n`;
-            text += `\n¿Cómo hacemos el intercambio? Te las dejo en tu buzón en un rato. ¡Abrazo!`;
+            let text = `¡Hola! 👋 Soy el vecino del Lote ${currentUser}.\n\n`;
+            if(cartPedidas.length > 0) text += `🔄 *Quiero cambiar por las tuyas:* ${cartPedidas.join(', ')} (Ya las reservé en la app).\n`;
+            if(cartOfrecidas.length > 0) text += `🤝 *Tengo para darte a cambio:* ${cartOfrecidas.join(', ')}.\n`;
+            text += `\nEn un rato te las dejo en tu buzón, ¡avisame cuando dejes las tuyas!`;
 
             // Resetear carrito local
             cartPedidas = []; cartOfrecidas = []; updateResumen(); renderVecinoViews();
