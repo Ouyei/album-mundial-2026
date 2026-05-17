@@ -3,74 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Álbum de Dante - D.S.C.</title>
+    <title>Álbum de Dante - Beta Social</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     
     <style>
         :root {
-            --dsc-violeta: #52217D;
-            --dsc-blanco: #ffffff;
-            --dsc-violeta-claro: #7b4ba3;
-            --dsc-accent: #f59e0b; 
-            --bg: #f3f4f6;
-            --text: #1f2937;
-            --border: #d1d5db;
+            --dsc-violeta: #52217D; --dsc-blanco: #ffffff; --dsc-violeta-claro: #7b4ba3;
+            --dsc-accent: #f59e0b; --bg: #f3f4f6; --text: #1f2937; --border: #d1d5db;
         }
 
-        body { 
-            font-family: -apple-system, system-ui, sans-serif; 
-            background-color: var(--bg); 
-            color: var(--text);
-            margin: 0; padding: 0; 
-            padding-bottom: 80px;
-            user-select: none;
-        }
+        body { font-family: -apple-system, system-ui, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; padding-bottom: 80px; user-select: none; }
 
         /* Header Fijo */
-        .header {
-            background: var(--dsc-violeta);
-            color: white;
-            padding: 15px;
-            text-align: center;
-            position: sticky;
-            top: 0; z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            display: flex; align-items: center; justify-content: center; gap: 12px;
-        }
+        .header { background: var(--dsc-violeta); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; gap: 12px; }
         .header img { height: 35px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3)); }
         .header h1 { margin: 0; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; }
+        .logout-btn { position: absolute; right: 15px; background: rgba(255,255,255,0.2); border: none; color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px; cursor: pointer; }
+
+        /* Login Overlay */
+        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dsc-violeta); z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
+        .login-box { background: white; color: var(--text); padding: 30px; border-radius: 15px; width: 80%; max-width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .login-box input { width: 100%; padding: 12px; margin: 15px 0; border: 2px solid var(--border); border-radius: 8px; font-size: 16px; text-align: center; box-sizing: border-box;}
+        .login-box button { background: var(--dsc-accent); color: var(--dsc-violeta); font-weight: 900; font-size: 16px; border: none; padding: 12px; width: 100%; border-radius: 8px; cursor: pointer; }
 
         /* Stats bar */
-        .stats-bar {
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 11px;
-            font-weight: 600;
-            color: #6b7280;
-            text-transform: uppercase;
-        }
+        .stats-bar { background: white; display: flex; justify-content: space-around; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; }
         .stat-item span { display: block; font-size: 20px; font-weight: bold; color: var(--dsc-violeta); text-align: center; margin-bottom: 2px;}
 
         /* Bottom Nav */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0; width: 100%;
-            background: white;
-            display: flex;
-            height: 65px;
-            border-top: 1px solid var(--border);
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            z-index: 1000;
-        }
-        .nav-item {
-            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #6b7280; font-size: 12px; font-weight: 600; cursor: pointer;
-        }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; height: 65px; border-top: 1px solid var(--border); z-index: 1000; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #6b7280; font-size: 12px; font-weight: 600; cursor: pointer; }
         .nav-item.active { color: var(--dsc-violeta); }
         .nav-icon { font-size: 22px; margin-bottom: 4px; }
 
@@ -79,12 +43,7 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* Filtros */
-        .filtros { display: flex; gap: 8px; margin-bottom: 20px; }
-        .btn-filtro { flex: 1; background: white; border: 2px solid var(--dsc-violeta); color: var(--dsc-violeta); padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px;}
-        .btn-filtro.active { background: var(--dsc-violeta); color: white; }
-
-        /* Estilos Secciones */
+        /* Secciones Álbum */
         .group-header { font-size: 14px; font-weight: bold; padding: 10px 15px; color: white; background: #374151; border-radius: 8px; margin: 25px 0 15px 0; text-transform: uppercase; }
         .album-section { background: white; padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 15px; }
         .section-title { display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--border); padding-bottom: 8px; margin-bottom: 12px; font-size: 16px; font-weight: bold; color: var(--dsc-violeta); }
@@ -92,32 +51,42 @@
 
         /* Grid Figuritas */
         .stickers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); gap: 8px; }
-        .sticker { 
-            aspect-ratio: 1; background: var(--bg); border: 2px solid var(--border); border-radius: 8px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            position: relative; font-weight: bold; cursor: pointer; transition: 0.1s;
-        }
+        .sticker { aspect-ratio: 1; background: var(--bg); border: 2px solid var(--border); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; font-weight: bold; cursor: pointer; transition: 0.1s; }
         .sticker-num { font-size: 16px; }
         .sticker-prefix { font-size: 9px; color: #666; margin-bottom: 1px; }
 
         .sticker.tengo { background: var(--dsc-violeta); color: white; border-color: var(--dsc-violeta); }
         .sticker.repetida { background: var(--dsc-violeta-claro); color: white; border-color: var(--dsc-accent); border-width: 3px; }
+        .sticker.reservada { background: #9ca3af; color: white; border-color: #6b7280; opacity: 0.8; cursor: not-allowed; }
+        .sticker.seleccionada { border-color: #10b981; background: #d1fae5; color: #047857; border-width: 3px; }
+        
         .badge { position: absolute; top: -6px; right: -6px; background: var(--dsc-accent); color: var(--dsc-violeta); border-radius: 50%; width: 20px; height: 20px; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 
-        /* Formularios */
+        /* Globales */
         .card { background: white; padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 15px; }
-        textarea { width: 100%; height: 120px; border-radius: 8px; border: 2px solid var(--border); padding: 12px; box-sizing: border-box; font-size: 16px; font-family: sans-serif; }
         .btn { background: var(--dsc-violeta); color: white; border: none; padding: 14px; border-radius: 8px; width: 100%; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 10px; }
+        .info-bar { background: #dbeafe; color: #1e3a8a; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: bold; text-align: center; margin-bottom: 15px; border: 1px solid #bfdbfe; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <img src="dsc-escudo.png" alt="D.S.C." onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/a/a1/Defensor_Sporting.svg'">
-        <h1>Álbum de Dante</h1>
+    <div id="login-overlay">
+        <img src="dsc-escudo.png" height="80" style="margin-bottom: 20px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3))" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/a/a1/Defensor_Sporting.svg'">
+        <div class="login-box">
+            <h2 style="margin-top:0; color:var(--dsc-violeta)">¡Hola Vecino! 👋</h2>
+            <p style="font-size: 14px; color: #666;">Ingresa tu número de lote para intercambiar figuritas con Dante.</p>
+            <input type="text" id="login-input" placeholder="Ej: 307 (O clave Admin)">
+            <button onclick="login()">ENTRAR</button>
+        </div>
     </div>
 
-    <div class="stats-bar">
+    <div class="header">
+        <img src="dsc-escudo.png" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/a/a1/Defensor_Sporting.svg'">
+        <h1>Álbum de Dante</h1>
+        <button class="logout-btn" onclick="logout()">Salir</button>
+    </div>
+
+    <div class="stats-bar" id="stats-admin" style="display:none;">
         <div class="stat-item"><span id="stat-tenes">0</span>Tenés</div>
         <div class="stat-item"><span id="stat-faltan">0</span>Faltan</div>
         <div class="stat-item"><span id="stat-repes">0</span>Repes</div>
@@ -125,54 +94,70 @@
     </div>
 
     <div class="content">
-        <div id="view-album" class="tab-content active">
-            <div class="filtros">
-                <button class="btn-filtro active" onclick="renderAlbum('todas')">Todas</button>
-                <button class="btn-filtro" onclick="renderAlbum('faltan')">Faltan</button>
-                <button class="btn-filtro" onclick="renderAlbum('repetidas')">Repes</button>
-            </div>
-            <div id="album-render"></div>
+        <div id="admin-album" class="tab-content">
+            <div id="render-admin-album"></div>
         </div>
-
-        <div id="view-paquetes" class="tab-content">
+        <div id="admin-opciones" class="tab-content">
             <div class="card">
-                <h3 style="margin-top:0; color:var(--dsc-violeta)">Nuevas Figuritas 📦</h3>
-                <p style="font-size:13px; color:#666;">Ejemplo: <code>MEX 1, 2, 5-8, ARG 10</code></p>
-                <textarea id="input-paquetes" placeholder="Cargá acá tus paquetes..."></textarea>
+                <h3 style="margin-top:0; color:var(--dsc-violeta)">Sumar Paquetes 📦</h3>
+                <textarea id="input-paquetes" style="width:100%; height:80px; border-radius:8px; border:1px solid #ccc; padding:10px;" placeholder="Ej: MEX 1, JPN 5-8"></textarea>
                 <button class="btn" onclick="bulkAction(true)">Sumar al Álbum</button>
             </div>
+            <div class="card" style="border-color: #ef4444;">
+                <h3 style="margin-top:0; color:#ef4444">Eliminar Errores</h3>
+                <textarea id="input-admin" style="width:100%; height:50px; border-radius:8px; border:1px solid #ccc;" placeholder="Ej: MEX 10"></textarea>
+                <button class="btn" style="background:#ef4444" onclick="bulkAction(false)">Borrar</button>
+            </div>
         </div>
 
-        <div id="view-opciones" class="tab-content">
-            <div class="card">
-                <h3 style="margin-top:0; color:var(--dsc-violeta)">Intercambio 📲</h3>
-                <textarea id="share-text" style="height: 180px; font-family: monospace; background:#f9fafb;" readonly></textarea>
-                <button class="btn" onclick="copyShareText()">📋 Copiar para WhatsApp</button>
-            </div>
+        <div id="vecino-reservar" class="tab-content">
+            <div class="info-bar">💡 Selecciona hasta 5 figuritas que le sobren a Dante y que a ti te falten. Tienes 24hs para concretar.</div>
+            <div id="render-vecino-reservar"></div>
+        </div>
 
-            <div class="card" style="border-color: #ef4444;">
-                <h3 style="margin-top:0; color:#ef4444">Zona Admin ⚙️</h3>
-                <textarea id="input-admin" placeholder="Números a borrar..." style="height: 60px; border-color:#fca5a5;"></textarea>
-                <button class="btn" style="background:#ef4444" onclick="bulkAction(false)">Eliminar Errores</button>
-                <button class="btn" style="background:#111" onclick="resetAll()">⚠️ Resetear Todo</button>
+        <div id="vecino-ofrecer" class="tab-content">
+            <div class="info-bar">💡 Selecciona las que tú tienes repetidas y que a Dante le faltan.</div>
+            <div id="render-vecino-ofrecer"></div>
+        </div>
+
+        <div id="vecino-confirmar" class="tab-content">
+            <div class="card" style="text-align: center;">
+                <h2>Resumen de Cambio 🤝</h2>
+                <p><b>A Dante le pides:</b> <br><span id="resumen-pedidas" style="color:var(--dsc-violeta); font-weight:bold;">Ninguna</span></p>
+                <p><b>A Dante le das:</b> <br><span id="resumen-ofrecidas" style="color:#10b981; font-weight:bold;">Ninguna</span></p>
+                <button class="btn" style="background:#25D366; font-size:18px; margin-top:20px;" onclick="enviarWhatsApp()">✅ Enviar WhatsApp a Dante</button>
+            </div>
+            <div class="card">
+                <h3 style="text-align:center;">🏆 Muro de la Fama</h3>
+                <p style="font-size:12px; text-align:center; color:#666;">Lotes que más han ayudado a Dante</p>
+                <div id="ranking-list" style="font-weight:bold; color:var(--dsc-violeta); text-align:center;">Cargando...</div>
             </div>
         </div>
     </div>
 
-    <nav class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('album', this)">
-            <div class="nav-icon">📖</div><span>Álbum</span>
+    <nav class="bottom-nav" id="nav-admin" style="display:none;">
+        <div class="nav-item active" onclick="switchTab('admin-album', this)">
+            <div class="nav-icon">📖</div><span>Mi Álbum</span>
         </div>
-        <div class="nav-item" onclick="switchTab('paquetes', this)">
-            <div class="nav-icon">📦</div><span>Paquetes</span>
+        <div class="nav-item" onclick="switchTab('admin-opciones', this)">
+            <div class="nav-icon">⚙️</div><span>Control</span>
         </div>
-        <div class="nav-item" onclick="switchTab('opciones', this)">
-            <div class="nav-icon">⚙️</div><span>Opciones</span>
+    </nav>
+
+    <nav class="bottom-nav" id="nav-vecino" style="display:none;">
+        <div class="nav-item active" onclick="switchTab('vecino-reservar', this)">
+            <div class="nav-icon">🎁</div><span>Pedir</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('vecino-ofrecer', this)">
+            <div class="nav-icon">🤝</div><span>Ofrecer</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('vecino-confirmar', this)">
+            <div class="nav-icon">✅</div><span>Cerrar</span>
         </div>
     </nav>
 
     <script>
-        // --- CONFIGURACIÓN FIREBASE INTEGRADA ---
+        // --- CONFIGURACIÓN DE RED Y DATOS ---
         const firebaseConfig = {
             apiKey: "AIzaSyB4Fua85yydqUh70xFmNjH8ldp1i7EWS-Y",
             authDomain: "album-dante.firebaseapp.com",
@@ -180,114 +165,164 @@
             projectId: "album-dante",
             storageBucket: "album-dante.firebasestorage.app",
             messagingSenderId: "476563744693",
-            appId: "1:476563744693:web:a9e8a040359be30f3b1bfc",
-            measurementId: "G-5L37646BS0"
+            appId: "1:476563744693:web:a9e8a040359be30f3b1bfc"
         };
-
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.database().ref('album_dante_2026');
+        
+        // USAMOS UNA BASE DE DATOS BETA PARA PROBAR
+        const db = firebase.database().ref('album_dante_beta'); 
 
+        const NUMERO_WHATSAPP_ADMIN = "59898619567"; // <--- PON AQUÍ TU NÚMERO
+        const ADMIN_PASS = "Admin354";
+        
+        let currentUser = localStorage.getItem('dante_user_beta');
         let albumData = {};
-        window.currentFilter = 'todas';
+        let reservasData = {};
+        let rankingData = {};
 
-        // Mapeos de banderas y emojis
-        const flags = { MEX:"mx", RSA:"za", KOR:"kr", CZE:"cz", CAN:"ca", BIH:"ba", QAT:"qa", SUI:"ch", BRA:"br", MAR:"ma", HAI:"ht", SCO:"gb-sct", USA:"us", PAR:"py", AUS:"au", TUR:"tr", GER:"de", CUW:"cw", CIV:"ci", ECU:"ec", NED:"nl", JAP:"jp", SWE:"se", TUN:"tn", BEL:"be", EGY:"eg", IRN:"ir", NZL:"nz", ESP:"es", CPV:"cv", KSA:"sa", URU:"uy", FRA:"fr", SEN:"sn", IRQ:"iq", NOR:"no", ARG:"ar", ALG:"dz", AUT:"at", JOR:"jo", POR:"pt", COD:"cd", UZB:"uz", COL:"co", ENG:"gb-eng", CRO:"hr", GHA:"gh", PAN:"pa" };
-        const flagEmojis = { MEX:"🇲🇽", RSA:"🇿🇦", KOR:"🇰🇷", CZE:"🇨🇿", CAN:"🇨🇦", BIH:"🇧🇦", QAT:"🇶🇦", SUI:"🇨🇭", BRA:"🇧🇷", MAR:"🇲🇦", HAI:"🇭🇹", SCO:"🏴󠁧󠁢󠁳󠁣󠁴󠁿", USA:"🇺🇸", PAR:"🇵🇾", AUS:"🇦🇺", TUR:"🇹🇷", GER:"🇩🇪", CUW:"🇨🇼", CIV:"🇨🇮", ECU:"🇪🇨", NED:"🇳🇱", JAP:"🇯🇵", SWE:"🇸🇪", TUN:"🇹🇳", BEL:"🇧🇪", EGY:"🇪🇬", IRN:"🇮🇷", NZL:"🇳🇿", ESP:"🇪🇸", CPV:"🇨🇻", KSA:"🇸🇦", URU:"🇺🇾", FRA:"🇫🇷", SEN:"🇸🇳", IRQ:"🇮🇶", NOR:"🇳🇴", ARG:"🇦🇷", ALG:"🇩🇿", AUT:"🇦🇹", JOR:"🇯🇴", POR:"🇵🇹", COD:"🇨🇩", UZB:"🇺🇿", COL:"🇨🇴", ENG:"🏴󠁧󠁢󠁥󠁮󠁧󠁿", CRO:"🇭🇷", GHA:"🇬🇭", PAN:"🇵🇦", FWC:"🏆", CC:"🥤" };
+        // Carrito temporal del vecino
+        let cartPedidas = []; 
+        let cartOfrecidas = [];
 
+        // Corrección Typo: JPN
+        const flags = { MEX:"mx", RSA:"za", KOR:"kr", CZE:"cz", CAN:"ca", BIH:"ba", QAT:"qa", SUI:"ch", BRA:"br", MAR:"ma", HAI:"ht", SCO:"gb-sct", USA:"us", PAR:"py", AUS:"au", TUR:"tr", GER:"de", CUW:"cw", CIV:"ci", ECU:"ec", NED:"nl", JPN:"jp", SWE:"se", TUN:"tn", BEL:"be", EGY:"eg", IRN:"ir", NZL:"nz", ESP:"es", CPV:"cv", KSA:"sa", URU:"uy", FRA:"fr", SEN:"sn", IRQ:"iq", NOR:"no", ARG:"ar", ALG:"dz", AUT:"at", JOR:"jo", POR:"pt", COD:"cd", UZB:"uz", COL:"co", ENG:"gb-eng", CRO:"hr", GHA:"gh", PAN:"pa" };
         const albumMap = [
             { group: "Grupo A", teams: [{ name:"MÉXICO", prefix:"MEX", count:20 }, { name:"SUDÁFRICA", prefix:"RSA", count:20 }, { name:"COREA DEL SUR", prefix:"KOR", count:20 }, { name:"CHEQUIA", prefix:"CZE", count:20 }] },
             { group: "Grupo B", teams: [{ name:"CANADÁ", prefix:"CAN", count:20 }, { name:"BOSNIA", prefix:"BIH", count:20 }, { name:"QATAR", prefix:"QAT", count:20 }, { name:"SUIZA", prefix:"SUI", count:20 }] },
             { group: "Grupo C", teams: [{ name:"BRASIL", prefix:"BRA", count:20 }, { name:"MARRUECOS", prefix:"MAR", count:20 }, { name:"HAITÍ", prefix:"HAI", count:20 }, { name:"ESCOCIA", prefix:"SCO", count:20 }] },
             { group: "Grupo D", teams: [{ name:"USA", prefix:"USA", count:20 }, { name:"PARAGUAY", prefix:"PAR", count:20 }, { name:"AUSTRALIA", prefix:"AUS", count:20 }, { name:"TURQUÍA", prefix: "TUR", count:20 }] },
             { group: "Grupo E", teams: [{ name:"ALEMANIA", prefix:"GER", count:20 }, { name:"CURAZAO", prefix:"CUW", count:20 }, { name:"COSTA DE MARFIL", prefix:"CIV", count:20 }, { name:"ECUADOR", prefix: "ECU", count:20 }] },
-            { group: "Grupo F", teams: [{ name:"PAÍSES BAJOS", prefix:"NED", count:20 }, { name:"JAPÓN", prefix:"JAP", count:20 }, { name:"SUECIA", prefix:"SWE", count:20 }, { name:"TÚNEZ", prefix: "TUN", count:20 }] },
+            { group: "Grupo F", teams: [{ name:"PAÍSES BAJOS", prefix:"NED", count:20 }, { name:"JAPÓN", prefix:"JPN", count:20 }, { name:"SUECIA", prefix:"SWE", count:20 }, { name:"TÚNEZ", prefix: "TUN", count:20 }] },
             { group: "Grupo G", teams: [{ name:"BÉLGICA", prefix:"BEL", count:20 }, { name:"EGIPTO", prefix:"EGY", count:20 }, { name:"IRÁN", prefix: "IRN", count:20 }, { name:"NUEVA ZELANDA", prefix: "NZL", count:20 }] },
             { group: "Grupo H", teams: [{ name:"ESPAÑA", prefix:"ESP", count:20 }, { name:"CABO VERDE", prefix:"CPV", count:20 }, { name:"ARABIA SAUDITA", prefix: "KSA", count:20 }, { name:"URUGUAY", prefix: "URU", count:20 }] },
             { group: "Grupo I", teams: [{ name:"FRANCIA", prefix:"FRA", count:20 }, { name:"SENEGAL", prefix:"SEN", count:20 }, { name:"IRAK", prefix: "IRQ", count:20 }, { name:"NORUEGA", prefix: "NOR", count:20 }] },
             { group: "Grupo J", teams: [{ name:"ARGENTINA", prefix:"ARG", count:20 }, { name:"ARGELIA", prefix:"ALG", count:20 }, { name:"AUSTRIA", prefix: "AUT", count:20 }, { name:"JORDANIA", prefix: "JOR", count:20 }] },
             { group: "Grupo K", teams: [{ name:"PORTUGAL", prefix:"POR", count:20 }, { name:"RD CONGO", prefix:"COD", count:20 }, { name:"UZBEKISTÁN", prefix: "UZB", count:20 }, { name:"COLOMBIA", prefix: "COL", count:20 }] },
             { group: "Grupo L", teams: [{ name:"INGLATERRA", prefix:"ENG", count:20 }, { name:"CROACIA", prefix:"CRO", count:20 }, { name:"GHANA", prefix: "GHA", count:20 }, { name:"PANAMÁ", prefix: "PAN", count:20 }] },
-            { group: "Extras", teams: [{ name:"FIFA / ESPECIALES", prefix:"FWC", count:19 }, { name:"COCA COLA", prefix:"CC", count:14 }] }
+            { group: "Extras", teams: [{ name:"FIFA", prefix:"FWC", count:19 }, { name:"COCA COLA", prefix:"CC", count:14 }] }
         ];
 
         let TOTAL_STICKERS = 0;
         albumMap.forEach(g => g.teams.forEach(t => TOTAL_STICKERS += t.count));
 
-        // Sincronización en Tiempo Real con Firebase
-        db.on('value', (snapshot) => {
-            albumData = snapshot.val() || {};
-            renderAll();
-        });
+        // Iniciar App
+        checkLogin();
 
-        function renderAll() {
-            renderAlbum(window.currentFilter);
-            updateStats();
+        function checkLogin() {
+            if (!currentUser) {
+                document.getElementById('login-overlay').style.display = 'flex';
+            } else {
+                document.getElementById('login-overlay').style.display = 'none';
+                if (currentUser === 'ADMIN') {
+                    document.getElementById('nav-admin').style.display = 'flex';
+                    document.getElementById('stats-admin').style.display = 'flex';
+                    switchTab('admin-album', document.querySelector('#nav-admin .nav-item'));
+                } else {
+                    document.getElementById('nav-vecino').style.display = 'flex';
+                    switchTab('vecino-reservar', document.querySelector('#nav-vecino .nav-item'));
+                }
+                loadData();
+            }
         }
 
-        function toggleSticker(key) {
-            let count = albumData[key] || 0;
-            if (count >= 5) count = 0; else count++;
-            db.child(key).set(count);
+        function login() {
+            const input = document.getElementById('login-input').value.trim();
+            if(!input) return;
+            if(input === ADMIN_PASS) {
+                localStorage.setItem('dante_user_beta', 'ADMIN');
+            } else {
+                localStorage.setItem('dante_user_beta', input);
+            }
+            currentUser = localStorage.getItem('dante_user_beta');
+            checkLogin();
         }
 
-        function renderAlbum(filter) {
-            window.currentFilter = filter;
-            document.querySelectorAll('.btn-filtro').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase().includes(filter.substring(0,3))));
-            const container = document.getElementById('album-render');
-            container.innerHTML = '';
-            
-            albumMap.forEach(groupBlock => {
-                let groupVisible = false;
-                const groupWrapper = document.createElement('div');
-                const header = document.createElement('div');
-                header.className = 'group-header'; header.innerText = groupBlock.group;
-                groupWrapper.appendChild(header);
+        function logout() {
+            localStorage.removeItem('dante_user_beta');
+            location.reload();
+        }
 
-                groupBlock.teams.forEach(section => {
-                    const sectionDiv = document.createElement('div');
-                    sectionDiv.className = 'album-section';
-                    const titleCont = document.createElement('div'); titleCont.className = 'section-title';
-                    const flagUrl = flags[section.prefix] ? `https://flagcdn.com/w40/${flags[section.prefix]}.png` : '';
-                    titleCont.innerHTML = flagUrl ? `<img class="flag-img" src="${flagUrl}"> ${section.name}` : section.name;
-                    sectionDiv.appendChild(titleCont);
-                    
-                    const grid = document.createElement('div'); grid.className = 'stickers-grid';
-                    let stickersVisible = 0;
-
-                    for (let i = 1; i <= section.count; i++) {
-                        const key = `${section.prefix}-${i}`;
-                        const count = albumData[key] || 0;
-                        if (filter === 'faltan' && count > 0) continue;
-                        if (filter === 'repetidas' && count < 2) continue;
-                        stickersVisible++;
-                        const div = document.createElement('div');
-                        div.className = `sticker ${count > 0 ? 'tengo' : ''} ${count > 1 ? 'repetida' : ''}`;
-                        div.innerHTML = `<span class="sticker-prefix">${section.prefix}</span>${i}`;
-                        if(count > 1) div.innerHTML += `<div class="badge">+${count-1}</div>`;
-                        div.onclick = () => toggleSticker(key);
-                        grid.appendChild(div);
+        function loadData() {
+            db.on('value', (snapshot) => {
+                const data = snapshot.val() || {};
+                albumData = data.stock || {};
+                reservasData = data.reservas || {};
+                rankingData = data.ranking || {};
+                
+                // Limpieza automática de reservas (Vencimiento 24hs)
+                const now = Date.now();
+                Object.keys(reservasData).forEach(key => {
+                    if (now - reservasData[key].timestamp > 86400000) {
+                        db.child('reservas').child(key).remove();
                     }
-                    if (stickersVisible > 0) { sectionDiv.appendChild(grid); groupWrapper.appendChild(sectionDiv); groupVisible = true; }
                 });
-                if (groupVisible) container.appendChild(groupWrapper);
+
+                if(currentUser === 'ADMIN') {
+                    renderAdminAlbum();
+                    updateAdminStats();
+                } else {
+                    renderVecinoViews();
+                    renderRanking();
+                }
             });
         }
 
-        function updateStats() {
+        // --- LÓGICA ADMIN ---
+        function toggleAdminSticker(key) {
+            let count = albumData[key] || 0;
+            if (count >= 5) count = 0; else count++;
+            db.child('stock').child(key).set(count);
+        }
+
+        function renderAdminAlbum() {
+            const container = document.getElementById('render-admin-album');
+            container.innerHTML = '';
+            albumMap.forEach(g => {
+                const w = document.createElement('div');
+                w.innerHTML = `<div class="group-header">${g.group}</div>`;
+                g.teams.forEach(s => {
+                    const sd = document.createElement('div'); sd.className = 'album-section';
+                    const flag = flags[s.prefix] ? `<img class="flag-img" src="https://flagcdn.com/w40/${flags[s.prefix]}.png">` : '';
+                    sd.innerHTML = `<div class="section-title">${flag} ${s.name}</div>`;
+                    
+                    const grid = document.createElement('div'); grid.className = 'stickers-grid';
+                    for (let i = 1; i <= s.count; i++) {
+                        const key = `${s.prefix}-${i}`;
+                        const count = albumData[key] || 0;
+                        const res = reservasData[key];
+                        
+                        const div = document.createElement('div');
+                        div.className = `sticker ${count > 0 ? 'tengo' : ''} ${count > 1 ? 'repetida' : ''} ${res ? 'reservada' : ''}`;
+                        div.innerHTML = `<span class="sticker-prefix">${s.prefix}</span>${i}`;
+                        if(count > 1 && !res) div.innerHTML += `<div class="badge">+${count-1}</div>`;
+                        if(res) div.innerHTML += `<div class="badge" style="background:#ef4444; font-size:8px;">⏱️</div>`;
+                        
+                        div.onclick = () => {
+                            if(res) {
+                                if(confirm(`El Lote ${res.lote} reservó esta figurita. ¿Marcar como ENTREGADA y descontar de tu stock?`)) {
+                                    db.child('stock').child(key).set(count - 1);
+                                    db.child('reservas').child(key).remove();
+                                    db.child('ranking').child(res.lote).set((rankingData[res.lote] || 0) + 1);
+                                }
+                            } else {
+                                toggleAdminSticker(key);
+                            }
+                        };
+                        grid.appendChild(div);
+                    }
+                    sd.appendChild(grid); w.appendChild(sd);
+                });
+                container.appendChild(w);
+            });
+        }
+
+        function updateAdminStats() {
             let t=0, r=0;
             Object.values(albumData).forEach(v => { if(v > 0) t++; if(v > 1) r += (v-1); });
             document.getElementById('stat-tenes').innerText = t;
             document.getElementById('stat-faltan').innerText = TOTAL_STICKERS - t;
             document.getElementById('stat-repes').innerText = r;
             document.getElementById('stat-progreso').innerText = Math.round((t/TOTAL_STICKERS)*100) + '%';
-            generateShareText();
-        }
-
-        function switchTab(tabId, el) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById('view-' + tabId).classList.add('active');
-            el.classList.add('active'); window.scrollTo(0,0);
         }
 
         function bulkAction(isAdd) {
@@ -301,35 +336,136 @@
                 for (let i = s; i <= e; i++) {
                     const key = `${prefix}-${i}`;
                     let current = albumData[key] || 0;
-                    db.child(key).set(isAdd ? current + 1 : 0);
+                    db.child('stock').child(key).set(isAdd ? current + 1 : 0);
                 }
             }
-            document.getElementById(id).value = ''; 
-            switchTab('album', document.querySelector('.nav-item'));
+            document.getElementById(id).value = ''; switchTab('admin-album', document.querySelector('.nav-item'));
         }
 
-        function resetAll() { if(confirm('¿Borrar TODO el álbum?')) db.set(null); }
-
-        function generateShareText() {
-            let fText = [], rText = [];
-            albumMap.forEach(g => g.teams.forEach(s => {
-                let sF = [], sR = [];
-                for (let i=1; i<=s.count; i++) {
-                    const c = albumData[`${s.prefix}-${i}`] || 0;
-                    if (c === 0) sF.push(i); if (c > 1) sR.push(i);
+        // --- LÓGICA VECINOS (SOCIAL) ---
+        function toggleCart(key, type) {
+            if(type === 'pedir') {
+                if(cartPedidas.includes(key)) {
+                    cartPedidas = cartPedidas.filter(k => k !== key);
+                } else {
+                    if(cartPedidas.length >= 5) return alert("¡Máximo 5 figuritas por reserva!");
+                    cartPedidas.push(key);
                 }
-                const emj = flagEmojis[s.prefix] || "";
-                if (sF.length > 0) fText.push(`${emj} ${s.prefix}: ${sF.join(', ')}`);
-                if (sR.length > 0) rText.push(`${emj} ${s.prefix}: ${sR.join(', ')}`);
-            }));
-            document.getElementById('share-text').value = `⚽ ÁLBUM DE DANTE (Mundial 2026) ⚽\n\n🔄 REPETIDAS:\n${rText.join('\n') || 'Ninguna'}\n\n😢 FALTAN:\n${fText.join('\n') || '¡Lleno!'}\n\n¿Cambiamos? 🫂`;
+            } else {
+                if(cartOfrecidas.includes(key)) cartOfrecidas = cartOfrecidas.filter(k => k !== key);
+                else cartOfrecidas.push(key);
+            }
+            renderVecinoViews();
+            updateResumen();
         }
 
-        function copyShareText() {
-            const t = document.getElementById('share-text'); 
-            t.select(); t.setSelectionRange(0, 99999);
-            document.execCommand('copy'); 
-            alert('¡Lista copiada! Ya puedes pegarla en WhatsApp.');
+        function renderVecinoViews() {
+            const cPedir = document.getElementById('render-vecino-reservar');
+            const cOfrecer = document.getElementById('render-vecino-ofrecer');
+            cPedir.innerHTML = ''; cOfrecer.innerHTML = '';
+
+            albumMap.forEach(g => {
+                const sdPedir = document.createElement('div');
+                const sdOfrecer = document.createElement('div');
+                let hasPedir = false, hasOfrecer = false;
+
+                g.teams.forEach(s => {
+                    const gridPedir = document.createElement('div'); gridPedir.className = 'stickers-grid';
+                    const gridOfrecer = document.createElement('div'); gridOfrecer.className = 'stickers-grid';
+                    let sPedir = 0, sOfrecer = 0;
+
+                    for (let i = 1; i <= s.count; i++) {
+                        const key = `${s.prefix}-${i}`;
+                        const count = albumData[key] || 0;
+                        const isReserved = reservasData[key];
+
+                        // Logica "Pedir" (Solo las que Dante tiene repetidas y no reservadas)
+                        if (count > 1 && !isReserved) {
+                            const d = document.createElement('div');
+                            d.className = `sticker ${cartPedidas.includes(key) ? 'seleccionada' : ''}`;
+                            d.innerHTML = `<span class="sticker-prefix">${s.prefix}</span>${i}`;
+                            d.onclick = () => toggleCart(key, 'pedir');
+                            gridPedir.appendChild(d);
+                            sPedir++;
+                        }
+
+                        // Logica "Ofrecer" (Solo las que a Dante le faltan)
+                        if (count === 0) {
+                            const d = document.createElement('div');
+                            d.className = `sticker ${cartOfrecidas.includes(key) ? 'seleccionada' : ''}`;
+                            d.innerHTML = `<span class="sticker-prefix">${s.prefix}</span>${i}`;
+                            d.onclick = () => toggleCart(key, 'ofrecer');
+                            gridOfrecer.appendChild(d);
+                            sOfrecer++;
+                        }
+                    }
+
+                    const flag = flags[s.prefix] ? `<img class="flag-img" src="https://flagcdn.com/w40/${flags[s.prefix]}.png">` : '';
+                    if (sPedir > 0) {
+                        const sec = document.createElement('div'); sec.className = 'album-section';
+                        sec.innerHTML = `<div class="section-title">${flag} ${s.name}</div>`;
+                        sec.appendChild(gridPedir); sdPedir.appendChild(sec); hasPedir = true;
+                    }
+                    if (sOfrecer > 0) {
+                        const sec = document.createElement('div'); sec.className = 'album-section';
+                        sec.innerHTML = `<div class="section-title">${flag} ${s.name}</div>`;
+                        sec.appendChild(gridOfrecer); sdOfrecer.appendChild(sec); hasOfrecer = true;
+                    }
+                });
+
+                if (hasPedir) { const w = document.createElement('div'); w.innerHTML = `<div class="group-header">${g.group}</div>`; w.appendChild(sdPedir); cPedir.appendChild(w); }
+                if (hasOfrecer) { const w = document.createElement('div'); w.innerHTML = `<div class="group-header">${g.group}</div>`; w.appendChild(sdOfrecer); cOfrecer.appendChild(w); }
+            });
+        }
+
+        function updateResumen() {
+            document.getElementById('resumen-pedidas').innerText = cartPedidas.length > 0 ? cartPedidas.join(', ') : 'Ninguna';
+            document.getElementById('resumen-ofrecidas').innerText = cartOfrecidas.length > 0 ? cartOfrecidas.join(', ') : 'Ninguna';
+        }
+
+        function enviarWhatsApp() {
+            if(cartPedidas.length === 0 && cartOfrecidas.length === 0) return alert("¡Selecciona alguna figurita primero!");
+            
+            // Impactar reservas en DB
+            const now = Date.now();
+            cartPedidas.forEach(key => {
+                db.child('reservas').child(key).set({ lote: currentUser, timestamp: now });
+            });
+
+            // Armar Mensaje
+            let text = `¡Hola Lote 354! 👋 Soy el vecino del Lote ${currentUser}.\n\n`;
+            if(cartPedidas.length > 0) text += `🎁 *Me sirven las tuyas:* ${cartPedidas.join(', ')} (Ya las reservé en la app).\n`;
+            if(cartOfrecidas.length > 0) text += `🤝 *Tengo para darte:* ${cartOfrecidas.join(', ')}.\n`;
+            text += `\n¿Cómo hacemos el intercambio? Te las dejo en tu buzón en un rato. ¡Abrazo!`;
+
+            // Resetear carrito local
+            cartPedidas = []; cartOfrecidas = []; updateResumen(); renderVecinoViews();
+
+            // Abrir WA
+            const url = `https://wa.me/${NUMERO_WHATSAPP_ADMIN}?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+        }
+
+        function renderRanking() {
+            const list = document.getElementById('ranking-list');
+            if(Object.keys(rankingData).length === 0) {
+                list.innerText = "¡Aún no hay intercambios! Sé el primero."; return;
+            }
+            let html = '';
+            // Ordenar de mayor a menor
+            const sorted = Object.entries(rankingData).sort((a,b) => b[1] - a[1]);
+            sorted.forEach((item, index) => {
+                let medalla = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '⭐';
+                html += `<div style="padding:5px; border-bottom:1px solid #eee;">${medalla} Lote ${item[0]} - ${item[1]} pts</div>`;
+            });
+            list.innerHTML = html;
+        }
+
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            el.classList.add('active'); window.scrollTo(0,0);
         }
     </script>
 </body>
