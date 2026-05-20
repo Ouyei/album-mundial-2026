@@ -293,7 +293,32 @@
 
         function loadData() {
             db.on('value', (snapshot) => {
-                const data = snapshot.val() || {};
+                let data = snapshot.val() || {};
+                
+                // --- SCRIPT DE AUTO-RESCATE DE FIGURITAS ---
+                let needsMigration = false;
+                let stockActual = data.stock || {};
+                
+                // Revisamos todo lo que hay en el cajón buscando figuritas sueltas
+                Object.keys(data).forEach(key => {
+                    // Si el nombre tiene un guión (ej: "MEX-1") y es un número, es una figurita vieja suelta
+                    if(key.includes('-') && typeof data[key] === 'number') {
+                        stockActual[key] = data[key]; // La guardamos en la nueva carpeta
+                        needsMigration = true;
+                    }
+                });
+
+                // Si encontramos figuritas viejas, reestructuramos la base de datos automáticamente
+                if(needsMigration) {
+                    db.set({
+                        stock: stockActual,
+                        reservas: data.reservas || {},
+                        ranking: data.ranking || {}
+                    });
+                    return; // Cortamos acá, Firebase volverá a cargar con la data corregida
+                }
+                // --- FIN DEL SCRIPT DE AUTO-RESCATE ---
+
                 albumData = data.stock || {};
                 reservasData = data.reservas || {};
                 rankingData = data.ranking || {};
