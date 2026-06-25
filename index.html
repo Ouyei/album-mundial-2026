@@ -137,6 +137,11 @@
                 <textarea id="input-admin" style="width:100%; height:50px; border-radius:8px; border:1px solid #ccc;" placeholder="Ej: MEX 10"></textarea>
                 <button class="btn" style="background:#ef4444" onclick="bulkAction(false)">Borrar</button>
             </div>
+            <div class="card" style="border-color: #10b981;">
+                <h3 style="margin-top:0; color:#10b981">Compartir en el Grupo 📢</h3>
+                <p style="font-size: 13px; color: #666;">Genera un mensaje automático con todas las que te faltan y te sobran para mandar al grupo de WhatsApp.</p>
+                <button class="btn" style="background:#25D366" onclick="compartirListaAdmin()">Compartir mi Lista</button>
+            </div>
         </div>
 
         <div id="vecino-reservar" class="tab-content">
@@ -201,7 +206,7 @@
         // APUNTANDO A LA BASE DE DATOS BETA PARA PRUEBAS
         const db = firebase.database().ref('album_dante_2026'); 
 
-        const NUMERO_WHATSAPP_ADMIN = "59898619567"; // <--- PON AQUÍ TU NÚMERO
+        const NUMERO_WHATSAPP_ADMIN = "59898619567"; // <--- ESTE ES TU NÚMERO
         const ADMIN_PASS = "Admin354";
         
         let currentUser = localStorage.getItem('dante_user_beta');
@@ -414,6 +419,34 @@
                 }
             }
             document.getElementById(id).value = ''; switchTab('admin-album', document.querySelector('.nav-item'));
+        }
+        
+        // --- FUNCIÓN NUEVA: COMPARTIR LISTA EN GRUPO (ADMIN) ---
+        function compartirListaAdmin() {
+            let faltantes = [];
+            let repetidas = [];
+
+            // Recorremos todo el álbum para separar faltantes y repetidas
+            albumMap.forEach(g => {
+                g.teams.forEach(s => {
+                    for (let i = 1; i <= s.count; i++) {
+                        const key = `${s.prefix}-${i}`;
+                        const count = albumData[key] || 0;
+                        if (count === 0) faltantes.push(key);
+                        if (count > 1) repetidas.push(`${key} (+${count - 1})`);
+                    }
+                });
+            });
+
+            // Armamos el texto para WhatsApp
+            let text = `¡Hola vecinos! Actualizo el álbum de Dante 📖⚽\n\n`;
+            text += `📉 *ME FALTAN (${faltantes.length}):*\n${faltantes.length > 0 ? faltantes.join(', ') : '¡Ninguna!'}\n\n`;
+            text += `🔄 *TENGO REPETIDAS (${repetidas.length}):*\n${repetidas.length > 0 ? repetidas.join(', ') : '¡Ninguna!'}\n\n`;
+            text += `👉 Entren a nuestra app para reservar directo: https://album-dante.vercel.app`;
+
+            // Abrimos WhatsApp con el texto listo para enviar a cualquier chat
+            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
         }
 
         // --- LÓGICA VECINOS (SOCIAL) ---
