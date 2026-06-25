@@ -19,7 +19,6 @@
         /* Header Fijo */
         .header { background: var(--dsc-violeta); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; gap: 15px; }
         
-        /* AJUSTE REQUISITO 1 Y 2: Logo más grande y sombra suavizada */
         .header img { height: 48px; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2)); }
         
         .header h1 { margin: 0; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; }
@@ -28,7 +27,6 @@
         /* Login Overlay */
         #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dsc-violeta); z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
         
-        /* AJUSTE REQUISITO 2: Sombra suavizada en login también */
         #login-overlay > img { height: 100px; margin-bottom: 20px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
         
         .login-box { background: white; color: var(--text); padding: 30px; border-radius: 15px; width: 80%; max-width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
@@ -395,9 +393,19 @@
             });
         }
 
+        // CÓDIGO CORREGIDO PARA EVITAR QUE CUENTE FANTASMAS
         function updateAdminStats() {
             let t=0, r=0;
-            Object.values(albumData).forEach(v => { if(v > 0) t++; if(v > 1) r += (v-1); });
+            // Solo contamos las figuritas que existen oficialmente en el álbum
+            albumMap.forEach(g => {
+                g.teams.forEach(s => {
+                    for (let i = 1; i <= s.count; i++) {
+                        const count = albumData[`${s.prefix}-${i}`] || 0;
+                        if(count > 0) t++;
+                        if(count > 1) r += (count - 1);
+                    }
+                });
+            });
             document.getElementById('stat-tenes').innerText = t;
             document.getElementById('stat-faltan').innerText = TOTAL_STICKERS - t;
             document.getElementById('stat-repes').innerText = r;
@@ -421,30 +429,43 @@
             document.getElementById(id).value = ''; switchTab('admin-album', document.querySelector('.nav-item'));
         }
         
-        // --- FUNCIÓN NUEVA: COMPARTIR LISTA EN GRUPO (ADMIN) ---
+        // --- FUNCIÓN NUEVA CORREGIDA: COMPARTIR LISTA EN GRUPO (ADMIN) ---
         function compartirListaAdmin() {
-            let faltantes = [];
-            let repetidas = [];
+            // Diccionario de Emojis
+            const emojis = { MEX:"🇲🇽", RSA:"🇿🇦", KOR:"🇰🇷", CZE:"🇨🇿", CAN:"🇨🇦", BIH:"🇧🇦", QAT:"🇶🇦", SUI:"🇨🇭", BRA:"🇧🇷", MAR:"🇲🇦", HAI:"🇭🇹", SCO:"🏴󠁧󠁢󠁳󠁣󠁴󠁿", USA:"🇺🇸", PAR:"🇵🇾", AUS:"🇦🇺", TUR:"🇹🇷", GER:"🇩🇪", CUW:"🇨🇼", CIV:"🇨🇮", ECU:"🇪🇨", NED:"🇳🇱", JPN:"🇯🇵", SWE:"🇸🇪", TUN:"🇹🇳", BEL:"🇧🇪", EGY:"🇪🇬", IRN:"🇮🇷", NZL:"🇳🇿", ESP:"🇪🇸", CPV:"🇨🇻", KSA:"🇸🇦", URU:"🇺🇾", FRA:"🇫🇷", SEN:"🇸🇳", IRQ:"🇮🇶", NOR:"🇳🇴", ARG:"🇦🇷", ALG:"🇩🇿", AUT:"🇦🇹", JOR:"🇯🇴", POR:"🇵🇹", COD:"🇨🇩", UZB:"🇺🇿", COL:"🇨🇴", ENG:"🏴󠁧󠁢󠁥󠁮󠁧󠁿", CRO:"🇭🇷", GHA:"🇬🇭", PAN:"🇵🇦", FWC:"⚽", CC:"🥤" };
 
-            // Recorremos todo el álbum para separar faltantes y repetidas
+            let faltantesTexto = "";
+            let repetidasTexto = "";
+            let totalFaltan = 0;
+            let totalRepes = 0;
+
+            // Recorremos agrupando por país
             albumMap.forEach(g => {
                 g.teams.forEach(s => {
+                    let faltanTeam = [];
+                    let repesTeam = [];
+                    
                     for (let i = 1; i <= s.count; i++) {
                         const key = `${s.prefix}-${i}`;
                         const count = albumData[key] || 0;
-                        if (count === 0) faltantes.push(key);
-                        if (count > 1) repetidas.push(`${key} (+${count - 1})`);
+                        if (count === 0) { faltanTeam.push(i); totalFaltan++; }
+                        if (count > 1) { repesTeam.push(`${i}`); totalRepes += (count-1); }
                     }
+
+                    let icon = emojis[s.prefix] || "📌";
+                    
+                    if (faltanTeam.length > 0) faltantesTexto += `${icon} *${s.prefix}:* ${faltanTeam.join(', ')}\n`;
+                    if (repesTeam.length > 0) repetidasTexto += `${icon} *${s.prefix}:* ${repesTeam.join(', ')}\n`;
                 });
             });
 
-            // Armamos el texto para WhatsApp
+            // Armamos el texto final
             let text = `¡Hola vecinos! Actualizo el álbum de Dante 📖⚽\n\n`;
-            text += `📉 *ME FALTAN (${faltantes.length}):*\n${faltantes.length > 0 ? faltantes.join(', ') : '¡Ninguna!'}\n\n`;
-            text += `🔄 *TENGO REPETIDAS (${repetidas.length}):*\n${repetidas.length > 0 ? repetidas.join(', ') : '¡Ninguna!'}\n\n`;
+            text += `📉 *ME FALTAN (${totalFaltan}):*\n${faltantesTexto || '¡Ninguna!\n'}\n`;
+            text += `🔄 *TENGO REPETIDAS (${totalRepes}):*\n${repetidasTexto || '¡Ninguna!\n'}\n`;
             text += `👉 Entren a nuestra app para reservar directo: https://album-dante.vercel.app`;
 
-            // Abrimos WhatsApp con el texto listo para enviar a cualquier chat
+            // Abrimos WhatsApp
             const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
             window.open(url, '_blank');
         }
